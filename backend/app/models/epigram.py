@@ -1,4 +1,4 @@
-"""Epigram model with explicit SQLAlchemy types for reliable Alembic migrations."""
+"""Epigram model with SQLAlchemy types."""
 
 from __future__ import annotations
 
@@ -20,18 +20,7 @@ class EpigramStatus(IntEnum):
 
 
 class Epigram(SQLModel, table=True):
-    """
-    A short epigram stored in PostgreSQL.
-
-    Columns
-      id primary key
-      text content up to 500 characters
-      author optional author up to 100 characters
-      status smallint with values 0 1 2
-      client_id optional browser identifier
-      created_at timestamptz default now
-      updated_at timestamptz auto updated on change
-    """
+    """Epigram database model."""
 
     __tablename__ = "epigrams"
     __table_args__ = (
