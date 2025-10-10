@@ -42,11 +42,11 @@ Build a small web app that shows a random epigram on the web. Visitors can load 
 
 ## API v1
 
-| Method | Endpoint                              | Description                                            |
-| ------ | ------------------------------------- | ------------------------------------------------------ |
-| GET    | `/api/epigrams/random`                | Return one random approved epigram                     |
-| POST   | `/api/epigrams`                       | Create a new epigram that is approved by default in v1 |
-| GET    | `/api/epigrams/mine?client_id=<uuid>` | Return submissions created by this browser id          |
+| Method | Endpoint               | Description                                            |
+| ------ | ---------------------- | ------------------------------------------------------ |
+| GET    | `/api/epigrams/random` | Return one random approved epigram                     |
+| POST   | `/api/epigrams`        | Create a new epigram that is approved by default in v1 |
+| GET    | `/api/epigrams/mine`   | Return submissions created by this browser id          |
 
 **POST body**
 

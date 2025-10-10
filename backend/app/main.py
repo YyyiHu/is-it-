@@ -1,19 +1,41 @@
 """
-Main entry point for the Is it API backend.
+FastAPI application entry point for v1.
+
+This module builds the app through a factory to keep configuration tidy.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# Create the FastAPI application instance
-app = FastAPI(title="Is it API")
+from app.middleware.client_id import ClientIdMiddleware
+from app.routers import epigram as epigram_router
 
 
-@app.get("/health")
-def health():
+def create_app() -> FastAPI:
     """
-    Health check endpoint.
+    Create and configure the FastAPI application.
 
-    Returns:
-        dict: A simple JSON response confirming the API is operational.
+    Returns
+    -------
+    FastAPI
+        The configured application instance.
     """
-    return {"status": "ok"}
+    application = FastAPI(title="Is It")
+
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173"],
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "DELETE"],
+        allow_headers=["*"],
+    )
+
+    application.add_middleware(ClientIdMiddleware)
+
+    application.include_router(epigram_router.router)
+
+    return application
+
+
+# Uvicorn entry point exposed as a module global
+app = create_app()
