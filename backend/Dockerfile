@@ -1,26 +1,25 @@
-# Use a small official Python image
 FROM python:3.13-slim
 
-# Set working directory inside container
 WORKDIR /app
 
-# Keep Python output unbuffered and disable .pyc cache
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PIP_NO_CACHE_DIR=1
+ENV PYTHONPATH=/app
 
-# Install dependencies first
+# libpq is needed by psycopg
+RUN apt-get update && apt-get install -y --no-install-recommends libpq5 && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+RUN pip install --upgrade pip && pip install -r /app/requirements.txt
 
-# Copy the rest of the backend code
 COPY . /app
 
-# Add execute permission to the entrypoint script
+# make the entry executable
 RUN chmod +x /app/entrypoint.sh
 
-# Expose port
-EXPOSE 8000
+# use entrypoint to apply migrations, allow command to be overridden by compose
+ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Run the entrypoint script
-CMD ["/app/entrypoint.sh"]
+# default server command
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
