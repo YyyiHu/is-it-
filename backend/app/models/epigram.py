@@ -30,17 +30,17 @@ class Epigram(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
     text: str = Field(
-        sa_type=String(500),
+        sa_type=String(150),
         nullable=False,
         index=True,
-        description="Epigram content up to 500 characters",
+        description="Epigram content up to 150 characters",
     )
 
     author: Optional[str] = Field(
         default=None,
-        sa_type=String(100),
+        sa_type=String(50),
         index=True,
-        description="Optional author name up to 100 characters",
+        description="Optional author name up to 50 characters",
     )
 
     # Use explicit SmallInteger, default to 1

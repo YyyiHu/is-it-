@@ -8,10 +8,10 @@ class EpigramBase(BaseModel):
     """Base epigram fields."""
 
     text: str = Field(
-        ..., min_length=1, max_length=500, description="Epigram content text"
+        ..., min_length=1, max_length=150, description="Epigram content text"
     )
     author: Optional[str] = Field(
-        None, max_length=100, description="Optional author name"
+        None, max_length=50, description="Optional author name"
     )
     client_id: Optional[str] = Field(
         None, max_length=100, description="Anonymous browser identifier"
