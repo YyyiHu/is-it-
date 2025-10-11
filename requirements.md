@@ -6,32 +6,50 @@ Build a small web app that shows a random epigram on the web. Visitors can load 
 
 ## Stack
 
-**Frontend:** Vite + React 18 + Redux Toolkit for UI state and TanStack Query for server state  
+**Frontend:** Vite + Vue 3 + TypeScript + Pinia for UI state + TanStack Query for server state  
 **Backend:** FastAPI with SQLModel and Alembic on Uvicorn  
-**Database:** PostgreSQL shared for development and production
+**Database:** PostgreSQL
 
 ## Must Have
 
 - Show a random approved epigram on first load
 - Floating Load new button to fetch another epigram
-- Settings panel to toggle auto reload with default ten minutes
+- Settings panel to toggle auto reload:
+  - Default to enabled with ten minute interval
+  - Clear toggle button to enable/disable
 - Contribute panel to submit text and optional author
 - Store and retrieve data from PostgreSQL
+- Basic client and server validation
+- Clear empty loading and error states
 
 ## Should Have
 
-- Basic client and server validation
-- Clear empty loading and error states
 - Simple rate limit such as five submissions per minute per IP
 - History icon and drawer that lists submissions from this browser even without login
   - Use a persistent client id stored in localStorage and a cookie
-  - Show items returned from the server and allow View to display one on the main area
+  - Show list of user's submitted epigrams in the history drawer:
+    - Each item shows text preview and author
+    - Items are clickable to display full epigram in center
+    - Most recent submissions at the top
   - Show empty state when there is no submission yet
 
 ## Could Have if time allows
 
 - Custom auto reload interval
-- List and search epigrams by text or author
+- Browse all epigrams feature:
+  - Book icon in header opens browse drawer
+  - List all approved epigrams, newest first
+  - Click any epigram to display in center
+  - Search by text or author
+  - Infinite scroll pagination
+  - TanStack Query for efficient data loading
+- Advanced performance features:
+  - TanStack Query integration:
+    - Efficient server state caching
+    - Background polling with smart retry
+    - Optimistic UI updates for submissions
+  - Prefetch multiple random epigrams for instant display
+  - Debounced search in browse view
 
 ## Future Features
 
@@ -53,8 +71,7 @@ Build a small web app that shows a random epigram on the web. Visitors can load 
 ```json
 {
   "text": "string",
-  "author": "string optional",
-  "client_id": "string optional"
+  "author": "string optional"
 }
 ```
 
@@ -76,28 +93,56 @@ Default status is one on insert
 
 ## Contribution Interaction
 
-- Pencil icon always visible in the header
-- Opens a right side Contribute drawer with a textarea for text an input for author and a submit button that stays disabled until valid
-- On submit the drawer closes a toast confirms creation and the app can refetch a random epigram or display the new submission
+- Pencil icon always visible in the header with tooltip
+- Right side Contribute drawer with:
+  - Textarea for text with character counter and validation state
+  - Input for author (optional) with character counter
+  - Submit button with clear enabled/disabled state
+  - Inline validation feedback for each field
+- Form submission flow:
+  - Show loading state during submission
+  - Display success toast on completion
+  - Close drawer and:
+    - Show the newly submitted epigram in the center display immediately
+    - Add it to the history drawer automatically
+  - TanStack Query handles optimistic updates
+  - "Load new" button still available to fetch random epigrams
 
 ## History Interaction without login
 
 - On first app load generate or read a client id from localStorage and set a cookie copy
-- When submitting include client_id in the POST body so the server stores it on the row
-- The History drawer calls GET slash api slash epigrams slash mine with client_id to fetch this browser submissions and caches them locally
-- Clicking a row sets the selected epigram as the current display
-- If localStorage is empty but the cookie exists the app can rebuild history by calling the mine endpoint
+- When submitting, the server automatically associates the epigram with the client_id from the cookie
+- The History drawer calls GET /api/epigrams/mine (client_id sent automatically via cookie) to fetch this browser's submissions and caches them locally
+- History interaction:
+  - Clicking any epigram in history immediately displays it in the center
+  - User can then:
+    - Keep viewing the selected epigram
+    - Click "Load new" to get a random one instead
+  - If localStorage is empty but the cookie exists, rebuild history by calling the mine endpoint
 
-### Validation
+### Validation and User Feedback
 
 - Client side
 
-  - text required and at most 500 characters
-  - author at most 100 characters
+  - Text field:
+    - Required with clear "required" indicator
+    - Max 500 characters with character counter
+    - Real-time validation feedback
+  - Author field:
+    - Optional with clear "optional" indicator
+    - Max 100 characters with character counter
+  - Form-level validation:
+    - Disable submit button when invalid
+    - Show field-specific error messages
+    - Use Vue 3's composition API for reactive validation
 
 - Server side
-  - same rules enforced in FastAPI
-  - trim and normalize whitespace
+  - Rules enforced in FastAPI:
+    - Text length and required status
+    - Author length if provided
+    - Whitespace trimming and normalization
+  - Return validation errors as structured response
+  - Client displays server validation errors inline
 
 ### Error Handling
 
@@ -105,3 +150,4 @@ Default status is one on insert
   - keep the drawer visible
   - disable Submit
   - show an inline retry message
+  - use Vue's error boundaries for component-level error handling
