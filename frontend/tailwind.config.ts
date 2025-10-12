@@ -60,5 +60,26 @@ export default {
     },
   },
   plugins: [],
+  safelist: [
+    // Add any classes that might be dynamically generated
+    "bg-theme-primary",
+    "bg-theme-secondary",
+    "bg-theme-tertiary",
+    "bg-theme-accent",
+    "text-theme-primary",
+    "text-theme-secondary",
+    "text-theme-tertiary",
+    "text-theme-white",
+    "text-theme-accent",
+    "text-theme-error",
+    "border-theme-primary",
+    "border-theme-light",
+    "border-theme-accent",
+    "border-theme-error",
+    "rounded-theme-lg",
+    "shadow-theme-lg",
+    "font-theme-display",
+    "font-theme-semibold",
+    "transition-theme-fast",
+  ],
 } satisfies Config;
-

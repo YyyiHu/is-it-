@@ -1,8 +1,11 @@
 /* Import Tailwind CSS */
 @import "./tailwind.css";
 
-/* Import variables */
+/* Import variables first (needed by utilities) */
 @import "./variables.css";
+
+/* Import custom utilities after variables */
+@import "./utilities.css";
 
 /* Import fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");

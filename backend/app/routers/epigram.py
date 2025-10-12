@@ -6,10 +6,11 @@ from sqlmodel import Session
 
 from app.db import get_session
 from app.schemas.epigram import EpigramCreate, EpigramRead
-from app.deps import get_client_id
+from app.deps import get_current_active_user
 from app.services.epigram import EpigramService
+from app.models.user import User
 
-router = APIRouter(prefix="/api/epigrams", tags=["Epigrams"])
+router = APIRouter(prefix="/epigrams", tags=["Epigrams"])
 
 
 def get_epigram_service(session: Session = Depends(get_session)) -> EpigramService:
@@ -56,11 +57,11 @@ def get_random_epigrams_batch(
 def create_epigram(
     payload: EpigramCreate,
     service: EpigramService = Depends(get_epigram_service),
-    client_id: str = Depends(get_client_id),
+    current_user: User = Depends(get_current_active_user),
 ):
-    """Create new epigram."""
+    """Create new epigram (authenticated users only)."""
     try:
-        epigram = service.create_epigram(payload, client_id)
+        epigram = service.create_epigram(payload, current_user.id)
         return epigram
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e)) from e
@@ -69,7 +70,7 @@ def create_epigram(
 @router.get("/mine", response_model=List[EpigramRead])
 def list_my_epigrams(
     service: EpigramService = Depends(get_epigram_service),
-    client_id: str = Depends(get_client_id),
+    current_user: User = Depends(get_current_active_user),
 ):
-    """Get epigrams created by current client."""
-    return service.get_client_epigrams(client_id)
+    """Get epigrams created by current authenticated user."""
+    return service.get_user_epigrams(current_user.id)

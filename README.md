@@ -1,26 +1,29 @@
 # Is It? - Epigram Display Application
 
-A modern web application that displays thought-provoking epigrams with automatic rotation and user submission capabilities.
+A modern web application that displays thought-provoking epigrams with automatic rotation and user submission capabilities. The application is fully responsive and works perfectly on both desktop and mobile devices.
 
-## Version 1.0 Features
+## Features
 
 ### Core Functionality
 
 - **Epigram Display**: Beautiful, responsive cards showing curated epigrams
+- **User Authentication**: Secure login and registration system
 - **Auto-Reload Timer**: Configurable automatic epigram rotation (1-240 minutes)
 - **Manual Refresh**: Instant epigram refresh with a single click
 - **User Submissions**: Submit your own epigrams for display
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Submission History**: View and manage your submitted epigrams
+- **Cross-Platform**: Optimized for desktop, tablet, and mobile devices
 
 ### User Experience
 
 - **Consistent Layout**: Fixed-width epigram cards for visual consistency
+- **User Dashboard**: Access your submissions and settings after login
 - **Settings Panel**: Easy configuration of auto-reload preferences
 - **Submission Panel**: Simple form for contributing epigrams
-- **Notifications**: Friendly success and error messages with automatic dismissal
+- **Notifications**: Success and error messages with automatic dismissal
 - **Timer Display**: Real-time countdown showing next epigram change
 - **Exit Confirmations**: Prevents accidental data loss when closing panels
-- **Form Validation**: Real-time feedback on submission form
+- **Form Validation**: Real-time feedback on submission forms
 
 ### Technical Features
 
@@ -28,51 +31,35 @@ A modern web application that displays thought-provoking epigrams with automatic
 - **PostgreSQL Database**: Robust data storage with Alembic migrations
 - **Vue.js Frontend**: Modern reactive UI with TypeScript
 - **FastAPI Backend**: High-performance Python API
-- **Browser Storage**: User preferences persist locally
+- **Secure Authentication**: HTTP-only cookies with JWT tokens
+- **TanStack Query**: Efficient data fetching and synchronization
 - **Queue System**: Pre-fetched epigrams ensure smooth transitions
-- **"Get Mine" API**: Retrieve user's previously submitted epigrams (client ID-based)
 
-## Version 2.0 Planned Improvements
+## User Interface
 
-### User Authentication System
+After logging in, users have access to several features through the header buttons:
 
-- **Guest Mode**:
+1. **Pencil Icon (Submit)**: Opens the submission panel to add a new epigram
 
-  - View epigrams and manual refresh only
-  - No auto-reload or submission features
-  - Clean, minimal interface
+   - Each epigram must be unique in the system
+   - Submissions are linked to your account
+   - Character limits ensure quality content
 
-- **User Accounts**:
-  - Simple username/password registration
-  - Standard password requirements (8+ chars, mixed case, numbers)
-  - Secure authentication with JWT tokens
+2. **Gear Icon (Settings)**: Configure auto-reload preferences
 
-### Enhanced User Experience
+   - Enable/disable automatic epigram rotation
+   - Set custom interval (1-240 minutes)
+   - Settings are saved to your account and persist across devices
 
-- **Dynamic Header**:
+3. **History Icon (My Epigrams)**: View your submitted epigrams
 
-  - **Guests**: Login/Signup buttons in top-right
-  - **Logged-in Users**: Settings and submission icons
+   - See all your previous submissions
+   - Select any submission to display it
+   - Edit or delete your own epigrams
 
-- **Personalized Settings**:
-  - Auto-reload preferences stored per user
-  - Custom timer intervals saved to database
-  - Submission history tracking
+4. **Logout Icon**: Securely end your session
 
-### Backend Enhancements
-
-- **New Database Tables**:
-
-  - `users` - User accounts and profiles
-  - `user_settings` - Individual auto-reload preferences
-  - Enhanced `epigrams` - Link submissions to users
-
-- **New API Endpoints**:
-  - `/auth/register` - User registration
-  - `/auth/login` - User authentication
-  - `/auth/logout` - Session termination
-  - `/users/settings` - Get/update user preferences
-  - `/users/submissions` - User's submission history
+When auto-reload is enabled, a timer appears showing the countdown until the next epigram change.
 
 ## Technology Stack
 
@@ -81,6 +68,7 @@ A modern web application that displays thought-provoking epigrams with automatic
 - **Vue.js 3** with Composition API
 - **TypeScript** for type safety
 - **Pinia** for state management
+- **TanStack Query** for data fetching
 - **Vite** for development and building
 - **Tailwind CSS** for styling
 
@@ -91,6 +79,8 @@ A modern web application that displays thought-provoking epigrams with automatic
 - **Alembic** for database migrations
 - **PostgreSQL** for data storage
 - **Pydantic** for data validation
+- **Argon2** for secure password hashing
+- **JWT** for authentication tokens
 
 ### DevOps
 
@@ -116,9 +106,9 @@ A modern web application that displays thought-provoking epigrams with automatic
 2. **Set up environment variables**
 
    ```bash
-   cp .env.example .env
+   cp env.example .env
    # Edit .env with your preferred settings
-   # Make sure to set DATABASE_URL and other required variables
+   # Make sure to set DATABASE_URL, SECRET_KEY and other required variables
    ```
 
 3. **Start the application with Docker Compose**
@@ -134,92 +124,42 @@ A modern web application that displays thought-provoking epigrams with automatic
    - Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
 
-## Project Structure
-
-```
-is-it-/
-├── backend/                 # FastAPI backend
-│   ├── app/
-│   │   ├── models/         # Database models
-│   │   ├── schemas/        # Pydantic schemas
-│   │   ├── api/           # API routes
-│   │   └── main.py        # Application entry point
-│   ├── alembic/           # Database migrations
-│   └── requirements.txt   # Python dependencies
-├── frontend/               # Vue.js frontend
-│   ├── src/
-│   │   ├── components/    # Vue components
-│   │   ├── stores/        # Pinia stores
-│   │   ├── services/      # API and utility services
-│   │   └── views/         # Page components
-│   └── package.json       # Node.js dependencies
-├── docker-compose.yaml     # Container orchestration
-└── README.md              # This file
-```
-
 ## Key Features in Detail
+
+### Authentication System
+
+- **Secure Registration**: Username and strong password requirements
+- **HTTP-Only Cookies**: JWT tokens stored in secure cookies
+- **Automatic Login**: Users remain logged in across sessions
+- **Guest Access**: Limited functionality for non-authenticated users
 
 ### Auto-Reload System
 
 - **Single Timer**: One active timer prevents conflicts
-- **Configurable Intervals**: 1-240 minutes with hour/minute precision
+- **Configurable Intervals**: 1-240 minutes with precision
 - **Smart Reset**: Timer resets on manual actions and successful submissions
 - **Visual Countdown**: Real-time display of remaining time
+- **Cross-Device Sync**: Settings automatically sync between devices
+- **Self-Healing**: Timer automatically recovers from errors or interruptions
+- **Initialization Control**: Timer only starts when properly initialized with user settings
+
+### Epigram Submission
+
+- **User Attribution**: All submissions linked to user accounts
+- **Validation**: Ensures quality content with character limits
+- **Duplicate Detection**: Prevents identical epigrams
+- **Optional Author**: Add attribution or submit anonymously
 
 ### Notification System
 
 - **Success Messages**: Friendly confirmation for successful actions
 - **Error Alerts**: Clear explanations when something goes wrong
-- **Timed Dismissal**: Messages automatically disappear after a few seconds
+- **Timed Dismissal**: Messages automatically disappear after 3 seconds
 - **Manual Dismissal**: Users can close notifications early if desired
-
-### Epigram Queue
-
-- **Pre-fetching**: Background loading ensures smooth transitions
-- **Efficient Loading**: Batch API calls minimize server requests
-- **Automatic Refill**: Queue maintains optimal size automatically
 
 ### Responsive Design
 
 - **Mobile First**: Optimized for all screen sizes
 - **Consistent Width**: Fixed epigram card dimensions
 - **Touch Friendly**: Large buttons and touch targets
-
-## Version Migration Path
-
-### User Experience Evolution: V1 to V2
-
-**V1 (Current Version):**
-
-- Users interact anonymously with browser-based settings
-- All users have full access to all features (auto-reload, submissions)
-- Settings are stored locally in the browser and lost when clearing cache
-- Submissions are tracked via browser client ID (semi-persistent)
-- Simple, straightforward interface with minimal configuration
-
-**V2 (Planned Version):**
-
-- Guest users have limited access (view and manual refresh only)
-- Registered users gain access to auto-reload and submission features
-- User settings persist across devices and browsers via database storage
-- Submissions are permanently linked to user accounts
-- Personalized experience with user-specific history and preferences
-
-### V1 to V2 Migration
-
-1. **Database Schema Updates**
-
-   - Add user authentication tables
-   - Migrate existing settings to user-based storage
-   - Preserve existing epigrams and submissions
-
-2. **API Compatibility**
-
-   - Maintain existing endpoints for backward compatibility
-   - Add new authenticated endpoints
-   - Implement graceful fallbacks for guest users
-
-3. **Frontend Enhancements**
-   - Add authentication components
-   - Update header with dynamic content
-   - Implement user-specific settings management
+- **CSS Variables**: Theme-consistent styling across components

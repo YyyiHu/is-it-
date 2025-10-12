@@ -1,10 +1,36 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
 import AppHeader from "@/components/layout/AppHeader.vue";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import HomeView from "@/views/HomeView.vue";
-import SubmissionPanel from "@/components/ui/panels/SubmissionPanel.vue";
-import SettingsPanel from "@/components/ui/panels/SettingsPanel.vue";
-import ToastManager from "@/components/ui/notifications/ToastManager.vue";
+import SubmissionPanel from "@/components/features/epigram/SubmissionPanel.vue";
+import SettingsPanel from "@/components/features/settings/SettingsPanel.vue";
+import AuthPanel from "@/components/features/auth/AuthPanel.vue";
+import ToastManager from "@/components/features/notifications/ToastManager.vue";
+import { useUiStore } from "@/stores/ui";
+import { useAuthStore } from "@/stores/auth";
+import { useUserSettings } from "@/composables/useUserSettings";
+
+const uiStore = useUiStore();
+const authStore = useAuthStore();
+
+// Initialize user settings composable globally to handle timer initialization on login
+useUserSettings();
+
+// Initialize authentication on app startup
+onMounted(async () => {
+  await authStore.initializeAuth();
+});
+
+const handleAuthSuccess = (type: "login" | "signup") => {
+  // Close the auth panel
+  uiStore.hideAuthPanel();
+};
+
+// Clear auth errors when opening the auth panel
+const handleAuthPanelOpen = () => {
+  authStore.clearError();
+};
 </script>
 
 <template>
@@ -20,6 +46,15 @@ import ToastManager from "@/components/ui/notifications/ToastManager.vue";
     <!-- Panels with proper z-index layering -->
     <SubmissionPanel />
     <SettingsPanel />
+
+    <!-- Auth Panel -->
+    <AuthPanel
+      v-if="uiStore.isAuthPanelOpen"
+      :initial-mode="uiStore.authPanelMode"
+      @close="uiStore.hideAuthPanel"
+      @success="handleAuthSuccess"
+      @open="handleAuthPanelOpen"
+    />
 
     <!-- Toast notifications with highest z-index -->
     <ToastManager />

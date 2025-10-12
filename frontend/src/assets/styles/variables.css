@@ -1,14 +1,36 @@
 :root {
-  /* Color palette */
+  /* Color palette - organized by color and shade */
+  /* White/Light */
   --white-000: #ffffff;
   --light-100: #f4f7fb;
   --light-200: #e0e9f4;
+
+  /* Grey */
   --grey-300: #b9c9db;
   --grey-400: #708ca6;
+
+  /* Dark/Black */
   --dark-700: #39545e;
   --dark-800: #28383e;
   --black-900: #07151d;
+
+  /* Red */
+  --red-100: #fee2e2;
+  --red-300: #fca5a5;
   --red-500: #ef4444;
+
+  /* Blue */
+  --blue-100: #dbeafe;
+
+  /* Overlay */
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --white-overlay-20: rgba(255, 255, 255, 0.2);
+  --white-overlay-35: rgba(255, 255, 255, 0.35);
+  --white-overlay-40: rgba(255, 255, 255, 0.4);
+  --black-shadow-08: rgba(0, 0, 0, 0.08);
+  --black-shadow-10: rgba(0, 0, 0, 0.1);
+  --black-shadow-15: rgba(0, 0, 0, 0.15);
+  --white-text-shadow: rgba(255, 255, 255, 0.3);
 
   /* Functional colors */
   --background: var(--white-000);
@@ -22,6 +44,9 @@
   --accent: var(--dark-700);
   --accent-hover: var(--dark-800);
   --error-red: var(--red-500);
+  --error-bg: var(--red-100);
+  --error-border: var(--red-300);
+  --modal-overlay: var(--overlay-bg);
 
   /* Font families */
   --font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont,

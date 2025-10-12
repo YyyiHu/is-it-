@@ -47,12 +47,12 @@ class EpigramService:
 
         return result
 
-    def create_epigram(self, payload: EpigramCreate, client_id: str) -> Epigram:
+    def create_epigram(self, payload: EpigramCreate, user_id: int) -> Epigram:
         """Create a new epigram.
 
         Args:
             payload: Creation data
-            client_id: Client ID
+            user_id: User ID of authenticated user
 
         Returns:
             Created epigram
@@ -67,7 +67,7 @@ class EpigramService:
         epigram = Epigram(
             text=payload.text,
             author=payload.author,
-            client_id=client_id,
+            user_id=user_id,
             status=EpigramStatus.APPROVED,
         )
 
@@ -76,18 +76,18 @@ class EpigramService:
         self.session.refresh(epigram)
         return epigram
 
-    def get_client_epigrams(self, client_id: str) -> List[Epigram]:
-        """Get epigrams by client ID.
+    def get_user_epigrams(self, user_id: int) -> List[Epigram]:
+        """Get epigrams by user ID.
 
         Args:
-            client_id: Client ID
+            user_id: User ID
 
         Returns:
             List of epigrams, newest first
         """
         stmt = (
             select(Epigram)
-            .where(Epigram.client_id == client_id)
+            .where(Epigram.user_id == user_id)
             .order_by(Epigram.id.desc())
         )
         return list(self.session.exec(stmt).all())

@@ -1,8 +1,18 @@
 <script setup lang="ts">
-import { PencilLine, Settings } from "lucide-vue-next";
+import { PencilLine, Settings, LogIn, UserPlus, LogOut } from "lucide-vue-next";
 import { useUiStore } from "@/stores/ui";
+import { useAuthStore } from "@/stores/auth";
 
 const uiStore = useUiStore();
+const authStore = useAuthStore();
+
+const handleSignOut = async () => {
+  try {
+    await authStore.logout();
+  } catch (error) {
+    console.error("Sign out failed:", error);
+  }
+};
 </script>
 
 <template>
@@ -13,21 +23,52 @@ const uiStore = useUiStore();
       </div>
 
       <div class="header-actions">
-        <button
-          class="header-icon-button"
-          aria-label="Submit epigram"
-          @click="uiStore.toggleSubmissionPanel"
-        >
-          <PencilLine :size="20" />
-        </button>
+        <!-- Guest users: Show login/signup buttons -->
+        <template v-if="authStore.isGuest">
+          <button
+            class="header-icon-button"
+            aria-label="Sign in"
+            @click="uiStore.showAuthPanel('login')"
+          >
+            <LogIn :size="20" />
+          </button>
 
-        <button
-          class="header-icon-button"
-          aria-label="Settings"
-          @click="uiStore.toggleSettingsPanel"
-        >
-          <Settings :size="20" />
-        </button>
+          <button
+            class="header-icon-button"
+            aria-label="Sign up"
+            @click="uiStore.showAuthPanel('signup')"
+          >
+            <UserPlus :size="20" />
+          </button>
+        </template>
+
+        <!-- Authenticated users: Show app actions -->
+        <template v-else>
+          <button
+            class="header-icon-button"
+            aria-label="Submit epigram"
+            @click="uiStore.toggleSubmissionPanel"
+          >
+            <PencilLine :size="20" />
+          </button>
+
+          <button
+            class="header-icon-button"
+            aria-label="Settings"
+            @click="uiStore.toggleSettingsPanel"
+          >
+            <Settings :size="20" />
+          </button>
+
+          <button
+            class="header-icon-button"
+            aria-label="Sign out"
+            @click="handleSignOut"
+            :disabled="authStore.isLoading"
+          >
+            <LogOut :size="20" />
+          </button>
+        </template>
       </div>
     </div>
   </header>
@@ -37,8 +78,8 @@ const uiStore = useUiStore();
 .app-header {
   background: linear-gradient(135deg, var(--grey-300) 0%, #a8b8ca 100%);
   padding: var(--spacing-sm) 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px var(--black-shadow-08);
+  border-bottom: 1px solid var(--white-overlay-20);
   width: 100%;
 }
 
@@ -60,7 +101,7 @@ const uiStore = useUiStore();
   font-size: 1.5rem;
   font-weight: var(--font-weight-bold);
   color: var(--dark-800);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px var(--white-text-shadow);
   letter-spacing: -0.02em;
 }
 
@@ -74,7 +115,7 @@ const uiStore = useUiStore();
   align-items: center;
   justify-content: center;
   color: var(--dark-700);
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--white-overlay-20);
   border: none;
   outline: none;
   border-radius: var(--radius-full);
@@ -82,30 +123,42 @@ const uiStore = useUiStore();
   height: 40px;
   transition: all var(--transition-fast);
   backdrop-filter: blur(4px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--black-shadow-10);
 }
 
 .header-icon-button:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--white-overlay-35);
   color: var(--dark-800);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px var(--black-shadow-15);
 }
 
 .header-icon-button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--black-shadow-10);
 }
 
 .header-icon-button:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+  background: var(--white-overlay-35);
+  box-shadow: 0 0 0 2px var(--white-overlay-40);
 }
 
 /* Remove any potential focus rings from SVG icons */
 .header-icon-button svg {
   outline: none;
   border: none;
+}
+
+.header-icon-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.header-icon-button:disabled:hover {
+  background: var(--white-overlay-20);
+  transform: none;
+  box-shadow: 0 2px 4px var(--black-shadow-10);
 }
 </style>

@@ -1,0 +1,306 @@
+/* Custom utility classes using CSS variables */
+
+@tailwind utilities;
+
+@layer utilities {
+  /* Background colors */
+  .bg-theme-primary {
+    background-color: var(--background);
+  }
+  .bg-theme-secondary {
+    background-color: var(--background-secondary);
+  }
+  .bg-theme-tertiary {
+    background-color: var(--background-tertiary);
+  }
+  .bg-theme-accent {
+    background-color: var(--accent);
+  }
+  .bg-theme-accent-hover:hover {
+    background-color: var(--accent-hover);
+  }
+  .bg-theme-error {
+    background-color: var(--error-red);
+  }
+  .bg-theme-grey {
+    background-color: var(--grey-300);
+  }
+
+  /* Text colors */
+  .text-theme-primary {
+    color: var(--text-primary);
+  }
+  .text-theme-secondary {
+    color: var(--text-secondary);
+  }
+  .text-theme-tertiary {
+    color: var(--text-tertiary);
+  }
+  .text-theme-white {
+    color: var(--white-000);
+  }
+  .text-theme-accent {
+    color: var(--accent);
+  }
+  .text-theme-accent-hover:hover {
+    color: var(--accent-hover);
+  }
+  .text-theme-error {
+    color: var(--error-red);
+  }
+
+  /* Border colors */
+  .border-theme-primary {
+    border-color: var(--border);
+  }
+  .border-theme-light {
+    border-color: var(--border-light);
+  }
+  .border-theme-accent {
+    border-color: var(--accent);
+  }
+  .border-theme-accent-hover:hover {
+    border-color: var(--accent-hover);
+  }
+  .border-theme-error {
+    border-color: var(--error-red);
+  }
+  .border-theme-grey {
+    border-color: var(--grey-300);
+  }
+
+  /* Focus states */
+  .focus\:border-theme-accent:focus {
+    border-color: var(--accent);
+  }
+  .focus\:border-theme-error:focus {
+    border-color: var(--error-red);
+  }
+  .focus\:ring-theme-accent:focus {
+    --tw-ring-color: var(--accent);
+  }
+  .focus\:ring-theme-error:focus {
+    --tw-ring-color: var(--error-red);
+  }
+  .focus\:ring-theme-accent-light:focus {
+    --tw-ring-color: var(--blue-100);
+  }
+  .focus\:ring-theme-error-light:focus {
+    --tw-ring-color: var(--red-100);
+  }
+
+  /* Hover states */
+  .hover\:bg-theme-tertiary:hover {
+    background-color: var(--background-tertiary);
+  }
+  .hover\:border-theme-accent:hover {
+    border-color: var(--accent);
+  }
+
+  /* Transitions using CSS variables */
+  .transition-theme-fast {
+    transition: all var(--transition-fast);
+  }
+  .transition-theme-normal {
+    transition: all var(--transition-normal);
+  }
+  .transition-theme-slow {
+    transition: all var(--transition-slow);
+  }
+
+  /* Border radius using CSS variables */
+  .rounded-theme-sm {
+    border-radius: var(--radius-sm);
+  }
+  .rounded-theme-md {
+    border-radius: var(--radius-md);
+  }
+  .rounded-theme-lg {
+    border-radius: var(--radius-lg);
+  }
+  .rounded-theme-xl {
+    border-radius: var(--radius-xl);
+  }
+  .rounded-theme-full {
+    border-radius: var(--radius-full);
+  }
+
+  /* Shadows using CSS variables */
+  .shadow-theme-sm {
+    box-shadow: var(--shadow-sm);
+  }
+  .shadow-theme-md {
+    box-shadow: var(--shadow-md);
+  }
+  .shadow-theme-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Z-index using CSS variables */
+  .z-theme-base {
+    z-index: var(--z-base);
+  }
+  .z-theme-dropdown {
+    z-index: var(--z-dropdown);
+  }
+  .z-theme-sticky {
+    z-index: var(--z-sticky);
+  }
+  .z-theme-fixed {
+    z-index: var(--z-fixed);
+  }
+  .z-theme-modal {
+    z-index: var(--z-modal);
+  }
+  .z-theme-popover {
+    z-index: var(--z-popover);
+  }
+  .z-theme-tooltip {
+    z-index: var(--z-tooltip);
+  }
+
+  /* Font families using CSS variables */
+  .font-theme-primary {
+    font-family: var(--font-primary);
+  }
+  .font-theme-display {
+    font-family: var(--font-display);
+  }
+
+  /* Font weights using CSS variables */
+  .font-theme-regular {
+    font-weight: var(--font-weight-regular);
+  }
+  .font-theme-medium {
+    font-weight: var(--font-weight-medium);
+  }
+  .font-theme-semibold {
+    font-weight: var(--font-weight-semibold);
+  }
+  .font-theme-bold {
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Spacing using CSS variables */
+  .p-theme-xs {
+    padding: var(--spacing-xs);
+  }
+  .p-theme-sm {
+    padding: var(--spacing-sm);
+  }
+  .p-theme-md {
+    padding: var(--spacing-md);
+  }
+  .p-theme-lg {
+    padding: var(--spacing-lg);
+  }
+  .p-theme-xl {
+    padding: var(--spacing-xl);
+  }
+  .p-theme-2xl {
+    padding: var(--spacing-2xl);
+  }
+
+  .px-theme-xs {
+    padding-left: var(--spacing-xs);
+    padding-right: var(--spacing-xs);
+  }
+  .px-theme-sm {
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+  }
+  .px-theme-md {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+  .px-theme-lg {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+  }
+  .px-theme-xl {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+  }
+
+  .py-theme-xs {
+    padding-top: var(--spacing-xs);
+    padding-bottom: var(--spacing-xs);
+  }
+  .py-theme-sm {
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+  }
+  .py-theme-md {
+    padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+  }
+  .py-theme-lg {
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+  }
+  .py-theme-xl {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+  }
+
+  .m-theme-xs {
+    margin: var(--spacing-xs);
+  }
+  .m-theme-sm {
+    margin: var(--spacing-sm);
+  }
+  .m-theme-md {
+    margin: var(--spacing-md);
+  }
+  .m-theme-lg {
+    margin: var(--spacing-lg);
+  }
+  .m-theme-xl {
+    margin: var(--spacing-xl);
+  }
+  .m-theme-2xl {
+    margin: var(--spacing-2xl);
+  }
+
+  .mx-theme-xs {
+    margin-left: var(--spacing-xs);
+    margin-right: var(--spacing-xs);
+  }
+  .mx-theme-sm {
+    margin-left: var(--spacing-sm);
+    margin-right: var(--spacing-sm);
+  }
+  .mx-theme-md {
+    margin-left: var(--spacing-md);
+    margin-right: var(--spacing-md);
+  }
+  .mx-theme-lg {
+    margin-left: var(--spacing-lg);
+    margin-right: var(--spacing-lg);
+  }
+  .mx-theme-xl {
+    margin-left: var(--spacing-xl);
+    margin-right: var(--spacing-xl);
+  }
+
+  .my-theme-xs {
+    margin-top: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+  }
+  .my-theme-sm {
+    margin-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+  .my-theme-md {
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+  .my-theme-lg {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  .my-theme-xl {
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+}

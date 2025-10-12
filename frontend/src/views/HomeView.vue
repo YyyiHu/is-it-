@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import { useEpigramStore } from "@/stores/epigram";
-import { autoReloadService } from "@/services/auto-reload";
-import EpigramCard from "@/components/epigram/EpigramCard.vue";
-import RefreshButton from "@/components/ui/buttons/RefreshButton.vue";
-import AutoReloadTimer from "@/components/ui/AutoReloadTimer.vue";
+import { autoReloadService } from "@/services";
+import EpigramCard from "@/components/features/epigram/EpigramCard.vue";
+import RefreshButton from "@/components/shared/ui/RefreshButton.vue";
+import AutoReloadTimer from "@/components/features/timer/AutoReloadTimer.vue";
 
 const epigramStore = useEpigramStore();
 const showTitle = ref(false);
 
 const loadNewEpigram = async () => {
-  console.log("Manual refresh clicked");
   showTitle.value = false; // Hide title during loading
   await epigramStore.loadNextEpigram("manual-refresh");
   // Manual refresh = start full timer
@@ -24,7 +23,6 @@ watch(
     if (newEpigram) {
       // Show title immediately when epigram loads
       showTitle.value = true;
-      console.log("Epigram changed:", newEpigram.id);
     }
   },
   { immediate: true }
@@ -34,12 +32,10 @@ watch(
 onMounted(() => {
   // Don't reload if we already have an epigram (prevents reload when returning from panels)
   if (!epigramStore.currentEpigram) {
-    console.log("HomeView mounted - loading initial epigram");
     epigramStore.loadInitialEpigram().then(() => {
       autoReloadService.startFullTimer();
     });
   } else {
-    console.log("HomeView mounted - epigram exists, starting timer");
     autoReloadService.startFullTimer();
   }
 });

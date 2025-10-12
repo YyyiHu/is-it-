@@ -21,14 +21,14 @@ const getIcon = (type: string) => {
 const getIconColor = (type: string) => {
   switch (type) {
     case "success":
-      return "text-green-500";
+      return "text-green-600";
     case "error":
       return "text-error-red";
     case "warning":
-      return "text-orange-500";
+      return "text-orange-600";
     case "info":
     default:
-      return "text-blue-500";
+      return "text-blue-600";
   }
 };
 
@@ -37,7 +37,7 @@ const getBorderColor = (type: string) => {
     case "success":
       return "border-green-200";
     case "error":
-      return "border-red-200";
+      return "border-error-border";
     case "warning":
       return "border-orange-200";
     case "info":
@@ -51,7 +51,7 @@ const getBackgroundColor = (type: string) => {
     case "success":
       return "bg-green-50";
     case "error":
-      return "bg-red-50";
+      return "bg-error-bg";
     case "warning":
       return "bg-orange-50";
     case "info":
@@ -108,20 +108,20 @@ const getBackgroundColor = (type: string) => {
 <style scoped>
 .toast-container {
   position: fixed;
-  top: 5rem;
-  right: 1rem;
-  z-index: 900;
+  top: var(--spacing-2xl);
+  right: var(--spacing-md);
+  z-index: var(--z-fixed);
   width: 100%;
   max-width: 24rem;
   pointer-events: none;
 }
 
 .toast-notification {
-  background: white;
+  background: var(--background);
   border: 1px solid;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 8px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-sm);
   overflow: hidden;
   pointer-events: auto;
 }
@@ -129,8 +129,8 @@ const getBackgroundColor = (type: string) => {
 .toast-content {
   display: flex;
   align-items: flex-start;
-  padding: 16px;
-  gap: 12px;
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .toast-icon {
@@ -145,15 +145,15 @@ const getBackgroundColor = (type: string) => {
 
 .toast-title {
   font-size: 14px;
-  font-weight: 600;
-  color: #111827;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
   margin: 0 0 4px 0;
   line-height: 1.3;
 }
 
 .toast-message {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.4;
 }
@@ -161,26 +161,26 @@ const getBackgroundColor = (type: string) => {
 .toast-close {
   flex-shrink: 0;
   padding: 4px;
-  border-radius: 4px;
-  color: #9ca3af;
+  border-radius: var(--radius-sm);
+  color: var(--grey-400);
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
 .toast-close:hover {
-  color: #6b7280;
-  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+  background-color: var(--black-shadow-08);
 }
 
 /* Toast animations */
 .notification-enter-active {
-  transition: all 0.3s ease-out;
+  transition: all var(--transition-normal) ease-out;
 }
 
 .notification-leave-active {
-  transition: all 0.3s ease-in;
+  transition: all var(--transition-normal) ease-in;
 }
 
 .notification-enter-from {
@@ -194,20 +194,20 @@ const getBackgroundColor = (type: string) => {
 }
 
 .notification-move {
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-normal);
 }
 
-/* Mobile responsive adjustments - keep right positioning but ensure no cutoff */
+/* Mobile responsive adjustments */
 @media (max-width: 768px) {
   .toast-container {
-    right: 0.75rem; /* Slightly less margin to prevent cutoff */
-    max-width: calc(100vw - 1.5rem); /* Ensure it fits within viewport */
-    top: 4rem;
+    right: var(--spacing-sm);
+    max-width: calc(100vw - var(--spacing-lg));
+    top: var(--spacing-xl);
   }
 
   .toast-content {
-    padding: 12px;
-    gap: 10px;
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
   }
 
   .toast-title {
@@ -221,14 +221,14 @@ const getBackgroundColor = (type: string) => {
 
 @media (max-width: 480px) {
   .toast-container {
-    right: 0.5rem; /* Even less margin on very small screens */
-    max-width: calc(100vw - 1rem); /* Tighter fit */
-    top: 3.5rem;
+    right: var(--spacing-xs);
+    max-width: calc(100vw - var(--spacing-md));
+    top: var(--spacing-lg);
   }
 
   .toast-content {
-    padding: 10px;
-    gap: 8px;
+    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
   .toast-title {

@@ -31,7 +31,7 @@ defineEmits<{
   right: 12px;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--white-overlay-90);
   border: 1px solid var(--border-light);
   border-radius: 50%;
   display: flex;
@@ -39,21 +39,21 @@ defineEmits<{
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   backdrop-filter: blur(4px);
   color: var(--accent);
 }
 
 .refresh-button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: white;
+  box-shadow: var(--shadow-md);
   transform: translateY(-1px);
   color: var(--accent-hover);
 }
 
 .refresh-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .refresh-button:disabled {

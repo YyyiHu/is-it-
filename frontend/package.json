@@ -9,6 +9,7 @@
     "preview": "vite preview --host"
   },
   "dependencies": {
+    "@tanstack/vue-query": "^5.90.2",
     "axios": "^1.12.2",
     "lucide-vue-next": "^0.545.0",
     "pinia": "^3.0.3",

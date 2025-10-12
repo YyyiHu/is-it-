@@ -13,9 +13,6 @@ class EpigramBase(BaseModel):
     author: Optional[str] = Field(
         None, max_length=50, description="Optional author name"
     )
-    client_id: Optional[str] = Field(
-        None, max_length=100, description="Anonymous browser identifier"
-    )
 
 
 class EpigramCreate(EpigramBase):
@@ -30,3 +27,4 @@ class EpigramRead(BaseModel):
     id: int = Field(..., description="Unique identifier of the Epigram")
     text: str = Field(..., description="Epigram content text")
     author: Optional[str] = Field(None, description="Optional author name")
+    user_id: int = Field(..., description="User who submitted this epigram")

@@ -53,11 +53,11 @@ class Epigram(SQLModel, table=True):
         )
     )
 
-    client_id: Optional[str] = Field(
-        default=None,
-        sa_type=String(100),
+    # User relationship - required for all epigrams
+    user_id: int = Field(
+        foreign_key="users.id",
         index=True,
-        description="Anonymous browser identifier",
+        description="User who submitted this epigram",
     )
 
     created_at: datetime = Field(

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { apiService } from "@/services/api";
+import { epigramService } from "@/services";
 import type { EpigramRead, EpigramCreate, LoadingState } from "@/types/epigram";
 
 interface EpigramState extends LoadingState {
@@ -28,7 +28,6 @@ export const useEpigramStore = defineStore("epigram", {
 
   actions: {
     setCurrentEpigram(epigram: EpigramRead): void {
-      console.log("📝 Setting current epigram:", epigram.id);
       this.currentEpigram = epigram;
     },
 
@@ -38,7 +37,7 @@ export const useEpigramStore = defineStore("epigram", {
 
       try {
         // Fetch initial batch
-        const epigrams = await apiService.getRandomEpigramsBatch(
+        const epigrams = await epigramService.getRandomEpigramsBatch(
           this.batchSize
         );
 
@@ -58,24 +57,15 @@ export const useEpigramStore = defineStore("epigram", {
     },
 
     async loadNextEpigram(source: string = "unknown"): Promise<void> {
-      console.log(
-        `Loading next epigram from: ${source} (queue: ${this.epigramQueue.length})`
-      );
-
       if (this.epigramQueue.length === 0) {
-        console.log("Queue empty, loading initial epigram");
         return this.loadInitialEpigram();
       }
 
       const nextEpigram = this.epigramQueue.shift();
-      console.log(`Loading epigram: ${nextEpigram?.id}`);
       this.currentEpigram = nextEpigram || null;
 
       // Refill queue in background if low
       if (this.epigramQueue.length <= this.queueMinSize) {
-        console.log(
-          `Queue low (${this.epigramQueue.length}), refilling in background`
-        );
         void this.refillQueue();
       }
     },
@@ -90,15 +80,13 @@ export const useEpigramStore = defineStore("epigram", {
         refillQueueState.lastRefillTime &&
         now - refillQueueState.lastRefillTime < 10000
       ) {
-        console.log("Skipping queue refill - too soon since last refill");
         return;
       }
       refillQueueState.lastRefillTime = now;
 
       try {
         const currentId = this.currentEpigram?.id;
-        console.log("Refilling queue with batch size:", this.batchSize);
-        const newEpigrams = await apiService.getRandomEpigramsBatch(
+        const newEpigrams = await epigramService.getRandomEpigramsBatch(
           this.batchSize,
           currentId
         );
@@ -119,7 +107,6 @@ export const useEpigramStore = defineStore("epigram", {
         // Only add to queue, don't change current epigram
         if (uniqueEpigrams.length > 0) {
           this.epigramQueue.push(...uniqueEpigrams);
-          console.log(`Added ${uniqueEpigrams.length} new epigrams to queue`);
         }
       } catch (error) {
         console.warn("Failed to refill epigram queue:", error);
@@ -131,7 +118,7 @@ export const useEpigramStore = defineStore("epigram", {
       this.error = null;
 
       try {
-        const newEpigram = await apiService.createEpigram(epigramData);
+        const newEpigram = await epigramService.createEpigram(epigramData);
         if (newEpigram) {
           this.userEpigrams.unshift(newEpigram);
           return newEpigram;
@@ -148,7 +135,7 @@ export const useEpigramStore = defineStore("epigram", {
 
     async loadUserEpigrams(): Promise<void> {
       try {
-        const epigrams = await apiService.getMyEpigrams();
+        const epigrams = await epigramService.getMyEpigrams();
         if (epigrams) {
           this.userEpigrams = epigrams;
         }

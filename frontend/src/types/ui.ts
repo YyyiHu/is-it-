@@ -1,7 +1,9 @@
 export interface UiState {
-  activePanel: "submission" | "settings" | null;
+  activePanel: "submission" | "settings" | "auth" | null;
   isSubmissionPanelOpen: boolean;
   isSettingsPanelOpen: boolean;
+  isAuthPanelOpen: boolean;
+  authPanelMode: "login" | "signup";
 }
 
 export interface SubmissionForm {

@@ -18,6 +18,7 @@ except Exception:
 
 from sqlmodel import SQLModel
 from app.models.epigram import Epigram
+from app.models.user import User, UserSettings  # noqa
 
 # Alembic configuration
 config = context.config
@@ -26,10 +27,39 @@ if config.config_file_name is not None:
 
 target_metadata = SQLModel.metadata
 
-# Read database URL
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
+# Import utility for resolving environment variables
+try:
+    from env_utils import resolve_env_vars
+except ImportError:
+    # Define inline if import fails
+    def resolve_env_vars(template_string):
+        """Resolve ${VAR} placeholders in string with environment variables"""
+        if not template_string:
+            return template_string
+
+        import re
+
+        pattern = r"\${([^}]+)}"
+
+        def replace_var(match):
+            var_name = match.group(1)
+            return os.getenv(var_name, "")
+
+        return re.sub(pattern, replace_var, template_string)
+
+
+# Read database URL and resolve any variables
+raw_url = os.getenv("DATABASE_URL")
+if not raw_url:
     raise RuntimeError("DATABASE_URL is not set")
+
+# Fix common issues with DATABASE_URL
+if raw_url.startswith("DATABASE_URL="):
+    # Remove duplicate prefix if present
+    raw_url = raw_url.replace("DATABASE_URL=", "", 1)
+
+# Resolve any ${VAR} placeholders
+DATABASE_URL = resolve_env_vars(raw_url)
 
 
 def run_migrations_offline() -> None:
