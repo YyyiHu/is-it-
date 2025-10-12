@@ -22,24 +22,30 @@
 }
 
 .footer-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  max-width: var(--container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
 }
 
 .footer-content {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
 }
 
 .copyright {
   font-size: 0.875rem;
   color: var(--text-tertiary);
-  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
 }
 
 .footer-tagline {
   font-size: 0.75rem;
   color: var(--grey-400);
   font-style: italic;
+  line-height: 1.4;
 }
 </style>
