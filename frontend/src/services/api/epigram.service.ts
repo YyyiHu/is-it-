@@ -1,19 +1,24 @@
-import ApiClient from "./api-client";
+import { BaseApiService } from "../core/base-api.service";
 import type { EpigramRead, EpigramCreate } from "@/types/epigram";
 
-// Use relative API path - Vite proxy will handle routing to backend
-const API_BASE_URL = "/api";
-
-class EpigramApiService extends ApiClient {
-  constructor() {
-    super(API_BASE_URL);
-  }
-
+/**
+ * Epigram service for fetching and managing epigrams
+ */
+class EpigramService extends BaseApiService {
+  /**
+   * Get a random epigram
+   * @param currentId Optional ID to exclude from results
+   */
   async getRandomEpigram(currentId?: number): Promise<EpigramRead> {
     const params = currentId ? `?current_id=${currentId}` : "";
     return this.get<EpigramRead>(`/epigrams/random${params}`);
   }
 
+  /**
+   * Get a batch of random epigrams
+   * @param count Number of epigrams to fetch
+   * @param currentId Optional ID to exclude from results
+   */
   async getRandomEpigramsBatch(
     count: number = 5,
     currentId?: number
@@ -27,21 +32,20 @@ class EpigramApiService extends ApiClient {
     return this.get<EpigramRead[]>(`/epigrams/random/batch?${params}`);
   }
 
+  /**
+   * Create a new epigram
+   */
   async createEpigram(epigram: EpigramCreate): Promise<EpigramRead> {
     return this.post<EpigramRead>("/epigrams/", epigram);
   }
 
+  /**
+   * Get epigrams submitted by the current user
+   */
   async getMyEpigrams(): Promise<EpigramRead[]> {
     return this.get<EpigramRead[]>("/epigrams/mine");
-  }
-
-  async healthCheck(): Promise<{ status: string }> {
-    return this.get<{ status: string }>("/health");
   }
 }
 
 // Export singleton instance
-export const apiService = new EpigramApiService();
-
-// Also export the class for testing or multiple instances
-export { EpigramApiService };
+export const epigramService = new EpigramService();
