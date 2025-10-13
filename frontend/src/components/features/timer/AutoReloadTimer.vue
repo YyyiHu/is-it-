@@ -26,27 +26,25 @@ const formatTime = (seconds: number): string => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
-// Update time left
+// Update time left - simplified
 const updateTimeLeft = () => {
-  // Only show timer for authenticated users with auto-reload enabled
-  if (!authStore.isAuthenticated || !autoReloadService.enabled) {
+  if (!authStore.isAuthenticated) {
     timeLeft.value = "";
     return;
   }
 
-  const status = autoReloadService.getStatus();
+  const timerInfo = autoReloadService.getTimerInfo();
 
-  // No longer automatically restart the timer here
-  // This was causing the timer to restart even after being disabled
+  // Only show timer if enabled and active
+  if (!timerInfo.enabled || !timerInfo.isActive || timerInfo.startTime === 0) {
+    timeLeft.value = "";
+    return;
+  }
 
-  // Calculate time left based on when timer was started
-  const lastStartTime = autoReloadService.getLastStartTime();
-  const elapsedMs = Date.now() - lastStartTime;
-  const totalMs = status.interval * 60 * 1000;
+  const elapsedMs = Date.now() - timerInfo.startTime;
+  const totalMs = timerInfo.interval * 60 * 1000;
   const remainingMs = Math.max(0, totalMs - elapsedMs);
   const remainingSeconds = Math.ceil(remainingMs / 1000);
-
-  // No debug logging in production
 
   timeLeft.value = formatTime(remainingSeconds);
 };
@@ -67,7 +65,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    v-if="authStore.isAuthenticated && timeLeft"
+    v-if="authStore.isAuthenticated && autoReloadService.enabled && timeLeft"
     :class="['auto-reload-timer', { 'with-bg': showBackground }]"
   >
     <Clock :size="14" />

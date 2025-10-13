@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { X } from "lucide-vue-next";
+import { X, Settings } from "lucide-vue-next";
 import { reactive, ref, computed, watch } from "vue";
 import { useUiStore } from "@/stores/ui";
 import { useAuthStore } from "@/stores/auth";
 import { useNotificationStore } from "@/stores/notification";
 import { useUserSettings } from "@/composables/useUserSettings";
 import { BaseButton } from "@/components/shared/forms";
-import ExitConfirmation from "@/components/shared/ui/ExitConfirmation.vue";
+import { ConfirmationDialog } from "@/components/shared/ui";
 
 const uiStore = useUiStore();
 const authStore = useAuthStore();
@@ -78,16 +78,19 @@ const saveSettings = () => {
   Object.assign(originalForm, form);
   hasChanges.value = false;
 
-  // Call the update function
+  // Call the update function - this will also update the auto-reload service
   updateSettings(settingsUpdate);
 
-  // Close panel first
-  uiStore.closeAllPanels();
-
-  // Show notification after panel closes
+  // Wait for settings to be applied before closing panel
   setTimeout(() => {
-    notificationStore.success("Settings saved successfully");
-  }, 300);
+    // Close panel
+    uiStore.closeAllPanels();
+
+    // Show notification after panel closes
+    setTimeout(() => {
+      notificationStore.success("Settings saved successfully");
+    }, 300);
+  }, 100);
 };
 
 const closePanel = () => {
@@ -133,10 +136,13 @@ const validateHours = () => {
       @click.stop
     >
       <!-- Exit confirmation overlay -->
-      <ExitConfirmation
+      <ConfirmationDialog
         :show="showExitConfirmation"
         title="Unsaved Changes"
         message="You have unsaved changes. Are you sure you want to close without saving?"
+        confirm-text="Leave"
+        cancel-text="Stay"
+        variant="warning"
         @confirm="closePanel"
         @cancel="cancelExit"
       />
@@ -145,7 +151,10 @@ const validateHours = () => {
       <div
         class="flex items-center justify-between p-6 border-b border-gray-200"
       >
-        <h2 class="text-xl font-semibold text-gray-900">Settings</h2>
+        <h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
+          <Settings :size="24" />
+          Settings
+        </h2>
         <button
           @click="handleClose"
           class="p-2 hover:bg-gray-100 rounded-full transition-colors"

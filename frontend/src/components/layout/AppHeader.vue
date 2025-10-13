@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { PencilLine, Settings, LogIn, UserPlus, LogOut } from "lucide-vue-next";
+import {
+  PencilLine,
+  Settings,
+  LogIn,
+  UserPlus,
+  LogOut,
+  History,
+} from "lucide-vue-next";
 import { useUiStore } from "@/stores/ui";
 import { useAuthStore } from "@/stores/auth";
 import { useNotificationStore } from "@/stores/notification";
@@ -53,6 +60,14 @@ const handleSignOut = async () => {
             @click="uiStore.toggleSubmissionPanel"
           >
             <PencilLine :size="20" />
+          </button>
+
+          <button
+            class="header-icon-button"
+            aria-label="History"
+            @click="uiStore.toggleHistoryPanel"
+          >
+            <History :size="20" />
           </button>
 
           <button

@@ -61,19 +61,7 @@ defineEmits<{
   cursor: not-allowed;
 }
 
-/* Custom spin animation */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
+/* Use Tailwind's animate-spin class - no custom animation needed */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
