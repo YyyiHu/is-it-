@@ -317,7 +317,8 @@ watch(isLoginMode, () => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
+/* Layout */
 .auth-panel-overlay {
   @apply fixed inset-0 flex items-center justify-center p-4;
   background: var(--modal-overlay);
@@ -328,6 +329,7 @@ watch(isLoginMode, () => {
   @apply w-full max-w-sm max-h-[90vh] overflow-y-auto bg-white border-2 border-light-200 rounded-lg shadow-lg;
 }
 
+/* Header */
 .auth-panel-header {
   @apply flex items-center justify-between p-6 pb-0 mb-4;
 }
@@ -344,6 +346,7 @@ watch(isLoginMode, () => {
   @apply text-black-900;
 }
 
+/* Content */
 .auth-panel-content {
   @apply px-6 pb-6;
 }
@@ -358,6 +361,7 @@ watch(isLoginMode, () => {
   border: 1px solid var(--error-border);
 }
 
+/* Switch section */
 .auth-switch {
   @apply mt-6 text-center pt-4;
   border-top: 1px solid var(--border-light);
@@ -368,7 +372,7 @@ watch(isLoginMode, () => {
 }
 
 .auth-switch-btn {
-  @apply bg-transparent border-none font-medium cursor-pointer underline text-sm p-0 ml-1 transition-all text-blue-500;
+  @apply bg-transparent border-none font-medium cursor-pointer underline p-0 ml-1 transition-all text-blue-500;
   font-size: inherit;
 }
 

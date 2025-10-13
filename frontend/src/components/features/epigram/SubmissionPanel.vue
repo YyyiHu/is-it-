@@ -56,34 +56,23 @@ const submitEpigram = async () => {
   }
 
   // Submit using the composable
-  submitEpigramMutation(
-    {
-      text: form.text,
-      author: form.author || undefined, // Convert empty string to undefined
-    },
-    {
-      onSuccess: () => {
-        // First clear form data
-        form.text = "";
-        form.author = "";
-        errors.value = {};
+  submitEpigramMutation({
+    text: form.text,
+    author: form.author || undefined, // Convert empty string to undefined
+  });
 
-        // Then close panel
-        uiStore.closeAllPanels();
+  // Clear form data immediately
+  form.text = "";
+  form.author = "";
+  errors.value = {};
 
-        // Finally show success notification after panel closes
-        setTimeout(() => {
-          notificationStore.success("Epigram submitted successfully");
-        }, 300);
-      },
-      onError: () => {
-        // Close panel on error after a short delay
-        setTimeout(() => {
-          uiStore.closeAllPanels();
-        }, 300);
-      },
-    }
-  );
+  // Close panel
+  uiStore.closeAllPanels();
+
+  // Show success notification after panel closes
+  setTimeout(() => {
+    notificationStore.success("Epigram submitted successfully");
+  }, 300);
 };
 
 const handleCloseAttempt = () => {
@@ -219,7 +208,7 @@ watch(
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .submission-panel {
   overflow-x: hidden;
 }
