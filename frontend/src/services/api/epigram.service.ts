@@ -5,14 +5,7 @@ import type { EpigramRead, EpigramCreate } from "@/types/epigram";
  * Epigram service for fetching and managing epigrams
  */
 class EpigramService extends BaseApiService {
-  /**
-   * Get a random epigram
-   * @param currentId Optional ID to exclude from results
-   */
-  async getRandomEpigram(currentId?: number): Promise<EpigramRead> {
-    const params = currentId ? `?current_id=${currentId}` : "";
-    return this.get<EpigramRead>(`/epigrams/random${params}`);
-  }
+  // Removed unused getRandomEpigram method
 
   /**
    * Get a batch of random epigrams
@@ -39,11 +32,44 @@ class EpigramService extends BaseApiService {
     return this.post<EpigramRead>("/epigrams/", epigram);
   }
 
+  // Removed unused getEpigramById method
+
   /**
-   * Get epigrams submitted by the current user
+   * Get epigrams submitted by the current user with pagination
    */
-  async getMyEpigrams(): Promise<EpigramRead[]> {
-    return this.get<EpigramRead[]>("/epigrams/mine");
+  async getMyEpigrams(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{
+    items: EpigramRead[];
+    total: number;
+    page: number;
+    size: number;
+    pages: number;
+    has_next: boolean;
+    has_prev: boolean;
+  }> {
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+    params.append("limit", limit.toString());
+    return this.get(`/epigrams/mine?${params}`);
+  }
+
+  /**
+   * Update an existing epigram
+   */
+  async updateEpigram(
+    id: number,
+    epigram: Partial<EpigramCreate>
+  ): Promise<EpigramRead> {
+    return this.put<EpigramRead>(`/epigrams/${id}`, epigram);
+  }
+
+  /**
+   * Delete an epigram
+   */
+  async deleteEpigram(id: number): Promise<void> {
+    return this.delete<void>(`/epigrams/${id}`);
   }
 }
 

@@ -32,11 +32,11 @@ export function useUserSettings(): {
       return userSettingsService.getUserSettings();
     },
     enabled: computed(() => authStore.isAuthenticated),
-    staleTime: 30 * 1000, // 30 seconds - settings can change on other devices
+    staleTime: 30 * 1000, // 30 seconds
     gcTime: 2 * 60 * 1000, // 2 minutes
     retry: 1,
-    refetchOnWindowFocus: true, // Refetch when user switches back to the app
-    refetchInterval: 60 * 1000, // Auto-refetch every 60 seconds when focused
+    refetchOnWindowFocus: true,
+    refetchInterval: 30 * 1000, // Refetch every 30 seconds as requested
   });
 
   // Mutation for updating user settings (only for authenticated users)
@@ -48,19 +48,20 @@ export function useUserSettings(): {
       return userSettingsService.updateUserSettings(settings);
     },
     onSuccess: (updatedSettings) => {
-      // Update the query cache
+      // Invalidate settings query to refetch fresh data
+      queryClient.invalidateQueries({ queryKey: ["userSettings"] });
+
+      // Update cache immediately for UI responsiveness
       queryClient.setQueryData(
         ["userSettings", authStore.user?.id],
         updatedSettings
       );
 
-      // Update the auto-reload service
+      // Update auto-reload service
       autoReloadService.updateSettings({
         enabled: updatedSettings.auto_reload_enabled,
         interval: updatedSettings.auto_reload_interval_minutes,
       });
-
-      // Success notification is now handled by the component
     },
     onError: (error) => {
       // Error notification is shown to user
@@ -68,20 +69,18 @@ export function useUserSettings(): {
     },
   });
 
-  // Watch for settings changes and initialize timer
+  // Simple watch for settings changes
   watch(
     () => settingsQuery.data.value,
     (newSettings) => {
       if (newSettings && authStore.isAuthenticated) {
-        // Stop any existing timer and start fresh with user settings
-        autoReloadService.stop();
         autoReloadService.updateSettings({
           enabled: newSettings.auto_reload_enabled,
           interval: newSettings.auto_reload_interval_minutes,
         });
       }
     },
-    { immediate: false }
+    { immediate: true }
   );
 
   // Watch for authentication changes

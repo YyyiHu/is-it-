@@ -29,7 +29,7 @@ export const useNotificationStore = defineStore("notification", {
         Date.now().toString() + Math.random().toString(36).substr(2, 9);
       const newNotification: Notification = {
         id,
-        duration: 3000, // Default 3 seconds
+        duration: 2000, // Default 2 seconds
         ...notification,
       };
 
@@ -62,7 +62,7 @@ export const useNotificationStore = defineStore("notification", {
         type: "success",
         title,
         message: message || "",
-        duration: duration ?? 3000, // Use default 3000ms if not provided
+        duration: duration ?? 2000, // Use default 2000ms if not provided
       });
     },
 
@@ -71,7 +71,7 @@ export const useNotificationStore = defineStore("notification", {
         type: "error",
         title,
         message: message || "",
-        duration: duration ?? 3000, // Use default 3000ms if not provided
+        duration: duration ?? 2000, // Use default 2000ms if not provided
       });
     },
 
@@ -80,7 +80,7 @@ export const useNotificationStore = defineStore("notification", {
         type: "info",
         title,
         message: message || "",
-        duration: duration ?? 3000, // Use default 3000ms if not provided
+        duration: duration ?? 2000, // Use default 2000ms if not provided
       });
     },
 
@@ -89,7 +89,7 @@ export const useNotificationStore = defineStore("notification", {
         type: "warning",
         title,
         message: message || "",
-        duration: duration ?? 3000, // Use default 3000ms if not provided
+        duration: duration ?? 2000, // Use default 2000ms if not provided
       });
     },
   },

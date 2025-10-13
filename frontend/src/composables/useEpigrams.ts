@@ -8,19 +8,15 @@ import { queryClient } from "@/lib/query-client";
 
 export function useEpigrams(): {
   epigramBatch: ComputedRef<EpigramRead[]>;
-  userEpigrams: ComputedRef<EpigramRead[]>;
   currentEpigramId: ComputedRef<number | undefined>;
   isBatchLoading: ComputedRef<boolean>;
-  isUserEpigramsLoading: ComputedRef<boolean>;
   isSubmitting: ComputedRef<boolean>;
   isBatchError: ComputedRef<boolean>;
-  isUserEpigramsError: ComputedRef<boolean>;
   submitError: ComputedRef<unknown>;
   submitEpigram: (data: EpigramCreate) => void;
   getNextEpigram: () => EpigramRead | undefined;
   refreshEpigrams: () => Promise<EpigramRead | undefined>;
   refetchBatch: () => Promise<unknown>;
-  refetchUserEpigrams: () => Promise<unknown>;
 } {
   const authStore = useAuthStore();
   const notificationStore = useNotificationStore();
@@ -38,17 +34,6 @@ export function useEpigrams(): {
     refetchOnWindowFocus: false,
   });
 
-  // Query for fetching user's submitted epigrams
-  const userEpigramsQuery = useQuery({
-    queryKey: ["userEpigrams", authStore.user?.id],
-    queryFn: async (): Promise<EpigramRead[]> => {
-      if (!authStore.isAuthenticated) return [];
-      return epigramService.getMyEpigrams();
-    },
-    enabled: computed(() => authStore.isAuthenticated),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
   // Mutation for submitting a new epigram
   const submitEpigramMutation = useMutation({
     mutationFn: async (epigramData: EpigramCreate): Promise<EpigramRead> => {
@@ -58,20 +43,14 @@ export function useEpigrams(): {
       return epigramService.createEpigram(epigramData);
     },
     onSuccess: (newEpigram) => {
-      // Add to user's epigrams cache
-      queryClient.setQueryData(
-        ["userEpigrams", authStore.user?.id],
-        (old: EpigramRead[] = []) => [newEpigram, ...old]
-      );
-
-      // Invalidate batch query to get fresh epigrams
+      // Invalidate batch query to get fresh epigrams and history query for user's epigrams
       queryClient.invalidateQueries({ queryKey: ["epigramBatch"] });
+      queryClient.invalidateQueries({ queryKey: ["userEpigrams"] });
 
-      // Success notification is handled by the component
+      // Show success notification
+      notificationStore.success("Epigram submitted successfully");
     },
     onError: (error: any) => {
-      // Error handling is done by the notification system
-
       // Handle specific error cases
       if (error.message?.includes("already exists")) {
         notificationStore.error("This epigram already exists");
@@ -110,17 +89,14 @@ export function useEpigrams(): {
   return {
     // Data
     epigramBatch: computed(() => epigramBatchQuery.data.value || []),
-    userEpigrams: computed(() => userEpigramsQuery.data.value || []),
     currentEpigramId: computed(() => currentEpigramId.value),
 
     // Loading states
     isBatchLoading: computed(() => epigramBatchQuery.isLoading.value),
-    isUserEpigramsLoading: computed(() => userEpigramsQuery.isLoading.value),
     isSubmitting: computed(() => submitEpigramMutation.isPending.value),
 
     // Error states
     isBatchError: computed(() => epigramBatchQuery.isError.value),
-    isUserEpigramsError: computed(() => userEpigramsQuery.isError.value),
     submitError: computed(() => submitEpigramMutation.error.value),
 
     // Actions
@@ -130,6 +106,5 @@ export function useEpigrams(): {
 
     // Utilities
     refetchBatch: epigramBatchQuery.refetch,
-    refetchUserEpigrams: userEpigramsQuery.refetch,
   };
 }

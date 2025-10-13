@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { epigramService } from "@/services";
+import { autoReloadService } from "@/services/features/auto-reload.service";
 import type { EpigramRead, EpigramCreate, LoadingState } from "@/types/epigram";
 
 interface EpigramState extends LoadingState {
   currentEpigram: EpigramRead | null;
   epigramQueue: EpigramRead[];
-  userEpigrams: EpigramRead[];
   queueMinSize: number;
   batchSize: number;
 }
@@ -19,7 +19,6 @@ export const useEpigramStore = defineStore("epigram", {
   state: (): EpigramState => ({
     currentEpigram: null,
     epigramQueue: [],
-    userEpigrams: [],
     isLoading: false,
     error: null,
     queueMinSize: 2, // Refetch when queue has 2 or fewer items
@@ -29,6 +28,39 @@ export const useEpigramStore = defineStore("epigram", {
   actions: {
     setCurrentEpigram(epigram: EpigramRead): void {
       this.currentEpigram = epigram;
+      // Reset timer when new epigram is displayed
+      autoReloadService.reset();
+    },
+
+    removeFromQueue(epigramId: number): void {
+      this.epigramQueue = this.epigramQueue.filter(
+        (epigram) => epigram.id !== epigramId
+      );
+    },
+
+    updateCurrentEpigram(updatedEpigram: EpigramRead): void {
+      // Update the current epigram if it matches
+      if (this.currentEpigram?.id === updatedEpigram.id) {
+        this.currentEpigram = updatedEpigram;
+      }
+
+      // Also update in queue if it exists there
+      const queueIndex = this.epigramQueue.findIndex(
+        (e) => e.id === updatedEpigram.id
+      );
+      if (queueIndex !== -1) {
+        this.epigramQueue[queueIndex] = updatedEpigram;
+      }
+    },
+
+    async handleCurrentEpigramDeleted(deletedEpigramId: number): Promise<void> {
+      // If the currently displayed epigram was deleted, load the next one
+      if (this.currentEpigram?.id === deletedEpigramId) {
+        await this.loadNextEpigram();
+      }
+
+      // Also remove from queue if it exists there
+      this.removeFromQueue(deletedEpigramId);
     },
 
     async loadInitialEpigram(): Promise<void> {
@@ -44,6 +76,8 @@ export const useEpigramStore = defineStore("epigram", {
         if (epigrams && epigrams.length > 0) {
           this.currentEpigram = epigrams[0] || null;
           this.epigramQueue = epigrams.slice(1);
+          // Reset timer when initial epigram is loaded
+          autoReloadService.reset();
         } else {
           // Handle empty response
           this.currentEpigram = null;
@@ -63,6 +97,9 @@ export const useEpigramStore = defineStore("epigram", {
 
       const nextEpigram = this.epigramQueue.shift();
       this.currentEpigram = nextEpigram || null;
+
+      // Reset timer when new epigram is loaded
+      autoReloadService.reset();
 
       // Refill queue in background if low
       if (this.epigramQueue.length <= this.queueMinSize) {
@@ -120,7 +157,6 @@ export const useEpigramStore = defineStore("epigram", {
       try {
         const newEpigram = await epigramService.createEpigram(epigramData);
         if (newEpigram) {
-          this.userEpigrams.unshift(newEpigram);
           return newEpigram;
         }
         throw new Error("Failed to create epigram");
@@ -130,17 +166,6 @@ export const useEpigramStore = defineStore("epigram", {
         throw error;
       } finally {
         this.isLoading = false;
-      }
-    },
-
-    async loadUserEpigrams(): Promise<void> {
-      try {
-        const epigrams = await epigramService.getMyEpigrams();
-        if (epigrams) {
-          this.userEpigrams = epigrams;
-        }
-      } catch (error) {
-        // Silent fail for user epigrams - non-critical feature
       }
     },
 
