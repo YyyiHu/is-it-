@@ -11,7 +11,7 @@ const showTitle = ref(false);
 
 const loadNewEpigram = async () => {
   showTitle.value = false; // Hide title during loading
-  await epigramStore.loadNextEpigram("manual-refresh");
+  await epigramStore.loadNextEpigram();
   // Manual refresh = start full timer
   autoReloadService.startFullTimer();
 };

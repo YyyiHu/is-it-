@@ -270,28 +270,22 @@ const handleSubmit = async () => {
         password: formData.value.password,
       });
 
-      // Close panel first
-      emit("close");
+      // Emit success first
+      emit("success", "login");
 
-      // Then emit success and show notification after a delay
-      setTimeout(() => {
-        emit("success", "login");
-        notificationStore.success("Successfully logged in");
-      }, 300);
+      // Then close panel
+      emit("close");
     } else {
       await authStore.register({
         username: formData.value.username,
         password: formData.value.password,
       });
 
-      // Close panel first
-      emit("close");
+      // Emit success first
+      emit("success", "signup");
 
-      // Then emit success and show notification after a delay
-      setTimeout(() => {
-        emit("success", "signup");
-        notificationStore.success("Account created successfully");
-      }, 300);
+      // Then close panel
+      emit("close");
     }
   } catch (err) {
     // Error is handled by the store

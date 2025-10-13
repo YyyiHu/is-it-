@@ -56,7 +56,7 @@ export const useEpigramStore = defineStore("epigram", {
       }
     },
 
-    async loadNextEpigram(source: string = "unknown"): Promise<void> {
+    async loadNextEpigram(): Promise<void> {
       if (this.epigramQueue.length === 0) {
         return this.loadInitialEpigram();
       }

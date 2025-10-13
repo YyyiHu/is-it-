@@ -67,7 +67,7 @@ class AutoReloadService {
 
     this.timerId = window.setTimeout(() => {
       const epigramStore = useEpigramStore();
-      epigramStore.loadNextEpigram("auto-reload-timer-expired").then(() => {
+      epigramStore.loadNextEpigram().then(() => {
         this.startFullTimer(); // Start next cycle
       });
     }, intervalMs);

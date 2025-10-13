@@ -2,13 +2,16 @@
 import { PencilLine, Settings, LogIn, UserPlus, LogOut } from "lucide-vue-next";
 import { useUiStore } from "@/stores/ui";
 import { useAuthStore } from "@/stores/auth";
+import { useNotificationStore } from "@/stores/notification";
 
 const uiStore = useUiStore();
 const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
 
 const handleSignOut = async () => {
   try {
     await authStore.logout();
+    notificationStore.success("Successfully signed out");
   } catch (error) {
     console.error("Sign out failed:", error);
   }

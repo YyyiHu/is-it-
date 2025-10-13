@@ -9,10 +9,12 @@ import AuthPanel from "@/components/features/auth/AuthPanel.vue";
 import ToastManager from "@/components/features/notifications/ToastManager.vue";
 import { useUiStore } from "@/stores/ui";
 import { useAuthStore } from "@/stores/auth";
+import { useNotificationStore } from "@/stores/notification";
 import { useUserSettings } from "@/composables/useUserSettings";
 
 const uiStore = useUiStore();
 const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
 
 // Initialize user settings composable globally to handle timer initialization on login
 useUserSettings();
@@ -23,8 +25,17 @@ onMounted(async () => {
 });
 
 const handleAuthSuccess = (type: "login" | "signup") => {
+  console.log("Auth success event received:", type);
+
   // Close the auth panel
   uiStore.hideAuthPanel();
+
+  // Show appropriate notification
+  if (type === "login") {
+    notificationStore.success("Successfully signed in");
+  } else {
+    notificationStore.success("Account created successfully");
+  }
 };
 
 // Clear auth errors when opening the auth panel
