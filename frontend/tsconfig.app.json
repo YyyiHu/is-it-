@@ -13,8 +13,6 @@
     "skipLibCheck": true,
     "exactOptionalPropertyTypes": false,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,

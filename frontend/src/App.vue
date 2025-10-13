@@ -3,7 +3,8 @@ import { onMounted } from "vue";
 import AppHeader from "@/components/layout/AppHeader.vue";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import HomeView from "@/views/HomeView.vue";
-import SubmissionPanel from "@/components/features/epigram/SubmissionPanel.vue";
+import EpigramFormPanel from "@/components/features/epigram/EpigramFormPanel.vue";
+import HistoryPanel from "@/components/features/epigram/HistoryPanel.vue";
 import SettingsPanel from "@/components/features/settings/SettingsPanel.vue";
 import AuthPanel from "@/components/features/auth/AuthPanel.vue";
 import ToastManager from "@/components/features/notifications/ToastManager.vue";
@@ -16,30 +17,22 @@ const uiStore = useUiStore();
 const authStore = useAuthStore();
 const notificationStore = useNotificationStore();
 
-// Initialize user settings composable globally to handle timer initialization on login
+// Initialize user settings and authentication
 useUserSettings();
-
-// Initialize authentication on app startup
 onMounted(async () => {
   await authStore.initializeAuth();
 });
 
 const handleAuthSuccess = (type: "login" | "signup") => {
-  // Close the auth panel
   uiStore.hideAuthPanel();
-
-  // Show appropriate notification
-  if (type === "login") {
-    notificationStore.success("Successfully signed in");
-  } else {
-    notificationStore.success("Account created successfully");
-  }
+  const message =
+    type === "login"
+      ? "Successfully signed in"
+      : "Account created successfully";
+  notificationStore.success(message);
 };
 
-// Clear auth errors when opening the auth panel
-const handleAuthPanelOpen = () => {
-  authStore.clearError();
-};
+const handleAuthPanelOpen = () => authStore.clearError();
 </script>
 
 <template>
@@ -52,8 +45,9 @@ const handleAuthPanelOpen = () => {
 
     <AppFooter class="flex-shrink-0" />
 
-    <!-- Panels with proper z-index layering -->
-    <SubmissionPanel />
+    <!-- Application panels -->
+    <EpigramFormPanel mode="create" />
+    <HistoryPanel />
     <SettingsPanel />
 
     <!-- Auth Panel -->
@@ -65,7 +59,7 @@ const handleAuthPanelOpen = () => {
       @open="handleAuthPanelOpen"
     />
 
-    <!-- Toast notifications with highest z-index -->
+    <!-- Toast notifications -->
     <ToastManager />
   </div>
 </template>
