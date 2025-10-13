@@ -11,13 +11,7 @@ const showTitle = ref(false);
 
 const loadNewEpigram = async () => {
   showTitle.value = false; // Hide title during loading
-  await epigramStore.loadNextEpigram();
-
-  // Only restart timer if auto-reload is enabled
-  const status = autoReloadService.getStatus();
-  if (status.enabled) {
-    autoReloadService.startFullTimer();
-  }
+  await epigramStore.loadNextEpigram(); // This will also reset the timer
 };
 
 // Watch for when epigram is loaded to show title immediately
@@ -36,17 +30,7 @@ watch(
 onMounted(() => {
   // Don't reload if we already have an epigram (prevents reload when returning from panels)
   if (!epigramStore.currentEpigram) {
-    epigramStore.loadInitialEpigram().then(() => {
-      // Only start timer if auto-reload is enabled
-      if (autoReloadService.enabled) {
-        autoReloadService.startFullTimer();
-      }
-    });
-  } else {
-    // Only start timer if auto-reload is enabled
-    if (autoReloadService.enabled) {
-      autoReloadService.startFullTimer();
-    }
+    epigramStore.loadInitialEpigram();
   }
 });
 </script>
