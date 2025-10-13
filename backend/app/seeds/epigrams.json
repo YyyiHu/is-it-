@@ -67,10 +67,6 @@
     "Unknown"
   ],
   [
-    "Programming is like sex: one mistake and you support it for life.",
-    "Michael Sinz"
-  ],
-  [
     "A SQL query walks into a bar, walks up to two tables, and asks: 'Can I join you?'",
     "Unknown"
   ],
@@ -103,5 +99,72 @@
     "Unknown"
   ],
   ["Hardware eventually fails. Software eventually works.", "Michael Hartung"],
-  ["There’s no place like 127.0.0.1.", "Unknown"]
+  ["There’s no place like 127.0.0.1.", "Unknown"],
+
+  ["Good code is its own best documentation.", "Steve McConnell"],
+  [
+    "The function of good software is to make the complex appear simple.",
+    "Grady Booch"
+  ],
+  [
+    "In theory, theory and practice are the same. In practice, they’re not.",
+    "Albert Einstein"
+  ],
+  [
+    "The trouble with programmers is that you can never tell what a programmer is doing until it’s too late.",
+    "Seymour Cray"
+  ],
+  [
+    "Programming isn't about what you know; it's about what you can figure out.",
+    "Chris Pine"
+  ],
+  [
+    "Simplicity is the consequence of refined thinking, not the absence of complexity.",
+    "Unknown"
+  ],
+  ["You can’t have great software without a great team.", "Jim McCarthy"],
+  [
+    "Every great developer you know got there by solving problems they were unqualified to solve until they actually did it.",
+    "Patrick McKenzie"
+  ],
+  [
+    "Programs are meant to be read by humans and only incidentally for computers to execute.",
+    "Donald Knuth"
+  ],
+  ["Software is a gas; it expands to fill its container.", "Nathan Myhrvold"],
+  [
+    "If you can’t explain it simply, you don’t understand it well enough.",
+    "Albert Einstein"
+  ],
+  ["Don’t document bad code — rewrite it.", "Brian Kernighan"],
+  [
+    "If debugging is the process of removing bugs, then programming must be the process of putting them in.",
+    "Edsger W. Dijkstra"
+  ],
+  ["Simplicity does not precede complexity, but follows it.", "Alan Perlis"],
+  [
+    "Walking on water and developing software from a specification are easy if both are frozen.",
+    "Edward V. Berard"
+  ],
+  [
+    "A good programmer looks both ways before crossing a one-way street.",
+    "Doug Linder"
+  ],
+  [
+    "Documentation is a love letter that you write to your future self.",
+    "Damian Conway"
+  ],
+  [
+    "There are two ways to write error-free programs; only the third one works.",
+    "Alan Perlis"
+  ],
+  [
+    "The best performance improvement is the transition from the nonworking state to the working state.",
+    "J. Osterhout"
+  ],
+  ["Good design adds value faster than it adds cost.", "Thomas C. Gale"],
+  ["Measure twice, cut once.", "Proverb"],
+  ["Don’t comment bad code, rewrite it.", "Brian Kernighan"],
+  ["Code never lies, comments sometimes do.", "Ron Jeffries"],
+  ["If you automate a mess, you get an automated mess.", "Rod Michael"]
 ]
