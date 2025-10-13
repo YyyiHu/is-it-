@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { computed, ref, type ComputedRef } from "vue";
 import { useQuery, useMutation } from "@tanstack/vue-query";
 import { useAuthStore } from "@/stores/auth";
 import { useNotificationStore } from "@/stores/notification";
@@ -6,12 +6,27 @@ import { epigramService } from "@/services";
 import type { EpigramRead, EpigramCreate } from "@/types/epigram";
 import { queryClient } from "@/lib/query-client";
 
-export function useEpigrams() {
+export function useEpigrams(): {
+  epigramBatch: ComputedRef<EpigramRead[]>;
+  userEpigrams: ComputedRef<EpigramRead[]>;
+  currentEpigramId: ComputedRef<number | undefined>;
+  isBatchLoading: ComputedRef<boolean>;
+  isUserEpigramsLoading: ComputedRef<boolean>;
+  isSubmitting: ComputedRef<boolean>;
+  isBatchError: ComputedRef<boolean>;
+  isUserEpigramsError: ComputedRef<boolean>;
+  submitError: ComputedRef<unknown>;
+  submitEpigram: (data: EpigramCreate) => void;
+  getNextEpigram: () => EpigramRead | undefined;
+  refreshEpigrams: () => Promise<EpigramRead | undefined>;
+  refetchBatch: () => Promise<unknown>;
+  refetchUserEpigrams: () => Promise<unknown>;
+} {
   const authStore = useAuthStore();
   const notificationStore = useNotificationStore();
 
   // Current epigram being displayed
-  const currentEpigramId = ref<number | null>(null);
+  const currentEpigramId = ref<number | undefined>(undefined);
 
   // Query for fetching a batch of random epigrams (for queue)
   const epigramBatchQuery = useQuery({
@@ -67,12 +82,14 @@ export function useEpigrams() {
   });
 
   // Function to get next epigram from batch
-  const getNextEpigram = (): EpigramRead | null => {
+  const getNextEpigram = (): EpigramRead | undefined => {
     const batch = epigramBatchQuery.data.value;
-    if (!batch || batch.length === 0) return null;
+    if (!batch || batch.length === 0) return undefined;
 
     // Get first epigram from batch
     const nextEpigram = batch[0];
+    if (!nextEpigram) return undefined;
+
     currentEpigramId.value = nextEpigram.id;
 
     // If batch is getting low, refetch in background
@@ -85,7 +102,7 @@ export function useEpigrams() {
 
   // Function to manually refresh (get new batch)
   const refreshEpigrams = async () => {
-    currentEpigramId.value = null; // Reset current to get fresh batch
+    currentEpigramId.value = undefined; // Reset current to get fresh batch
     await epigramBatchQuery.refetch();
     return getNextEpigram();
   };
