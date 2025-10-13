@@ -87,7 +87,6 @@ export const useAuthStore = defineStore("auth", () => {
       await authService.logout();
     } catch (err) {
       // Ignore logout API errors, we'll clear local state anyway
-      console.warn("Logout API call failed, clearing local state anyway");
     } finally {
       clearAuth();
       isLoading.value = false;
@@ -109,7 +108,6 @@ export const useAuthStore = defineStore("auth", () => {
       const userData = await authService.getCurrentUser();
       setUser(userData);
     } catch (err) {
-      console.warn("Failed to refresh user data");
       // If refresh fails, the token might be expired
       clearAuth();
     }

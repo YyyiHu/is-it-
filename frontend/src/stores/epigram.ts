@@ -109,7 +109,7 @@ export const useEpigramStore = defineStore("epigram", {
           this.epigramQueue.push(...uniqueEpigrams);
         }
       } catch (error) {
-        console.warn("Failed to refill epigram queue:", error);
+        // Silent fail for background queue refill
       }
     },
 
@@ -140,7 +140,7 @@ export const useEpigramStore = defineStore("epigram", {
           this.userEpigrams = epigrams;
         }
       } catch (error) {
-        console.warn("Failed to load user epigrams:", error);
+        // Silent fail for user epigrams - non-critical feature
       }
     },
 

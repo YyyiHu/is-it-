@@ -28,18 +28,16 @@ const formatTime = (seconds: number): string => {
 
 // Update time left
 const updateTimeLeft = () => {
-  const status = autoReloadService.getStatus();
-
-  // Only show timer for authenticated users with auto-reload enabled and initialized
-  if (!authStore.isAuthenticated || !status.enabled || !status.isInitialized) {
+  // Only show timer for authenticated users with auto-reload enabled
+  if (!authStore.isAuthenticated || !autoReloadService.enabled) {
     timeLeft.value = "";
     return;
   }
 
-  // If timer is not active but should be, restart it
-  if (!status.hasActiveTimer && status.enabled && status.isInitialized) {
-    autoReloadService.startFullTimer();
-  }
+  const status = autoReloadService.getStatus();
+
+  // No longer automatically restart the timer here
+  // This was causing the timer to restart even after being disabled
 
   // Calculate time left based on when timer was started
   const lastStartTime = autoReloadService.getLastStartTime();

@@ -70,7 +70,7 @@ export function useEpigrams(): {
       // Success notification is handled by the component
     },
     onError: (error: any) => {
-      console.error("Failed to submit epigram:", error);
+      // Error handling is done by the notification system
 
       // Handle specific error cases
       if (error.message?.includes("already exists")) {

@@ -10,7 +10,6 @@ class AutoReloadService {
   private isEnabled = ref(false);
   private intervalMinutes = ref(5);
   private lastStartTime = ref(Date.now());
-  private isInitialized = ref(false);
 
   constructor() {
     // Settings will be loaded by useUserSettings composable
@@ -23,7 +22,6 @@ class AutoReloadService {
   updateSettings(settings: { enabled: boolean; interval: number }): void {
     this.isEnabled.value = settings.enabled;
     this.intervalMinutes.value = settings.interval;
-    this.isInitialized.value = true;
 
     // Always stop any existing timer
     this.stop();
@@ -43,8 +41,8 @@ class AutoReloadService {
    * Start timer with full interval
    */
   startFullTimer(): void {
-    // Don't start if not enabled or not initialized
-    if (!this.isEnabled.value || !this.isInitialized.value) {
+    // Don't start if not enabled
+    if (!this.isEnabled.value) {
       return;
     }
 
@@ -90,23 +88,11 @@ class AutoReloadService {
     enabled: boolean;
     interval: number;
     hasActiveTimer: boolean;
-    isInitialized: boolean;
   } {
-    // If timer should be enabled but isn't active, restart it
-    if (
-      this.isEnabled.value &&
-      this.isInitialized.value &&
-      this.timerId === null
-    ) {
-      // Use setTimeout to avoid infinite recursion
-      setTimeout(() => this.startFullTimer(), 0);
-    }
-
     return {
       enabled: this.isEnabled.value,
       interval: this.intervalMinutes.value,
       hasActiveTimer: this.timerId !== null,
-      isInitialized: this.isInitialized.value,
     };
   }
 

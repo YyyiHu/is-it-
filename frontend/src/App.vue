@@ -25,8 +25,6 @@ onMounted(async () => {
 });
 
 const handleAuthSuccess = (type: "login" | "signup") => {
-  console.log("Auth success event received:", type);
-
   // Close the auth panel
   uiStore.hideAuthPanel();
 

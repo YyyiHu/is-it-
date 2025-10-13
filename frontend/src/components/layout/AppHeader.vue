@@ -13,7 +13,7 @@ const handleSignOut = async () => {
     await authStore.logout();
     notificationStore.success("Successfully signed out");
   } catch (error) {
-    console.error("Sign out failed:", error);
+    notificationStore.error("Failed to sign out");
   }
 };
 </script>

@@ -289,7 +289,6 @@ const handleSubmit = async () => {
     }
   } catch (err) {
     // Error is handled by the store
-    console.error("Authentication failed:", err);
   }
 };
 
