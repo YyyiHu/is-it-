@@ -1,10 +1,6 @@
 import axios from "axios";
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-
-export interface ApiError {
-  detail: string;
-  status?: number;
-}
+import type { ApiError } from "@/types/api";
 
 /**
  * Base HTTP client that handles API requests and responses
@@ -17,7 +13,7 @@ export class HttpClient {
     this.client = axios.create({
       baseURL,
       timeout: 10000,
-      withCredentials: true, // Important for cookie-based auth
+      withCredentials: true, // For cookie-based auth
       headers: {
         "Content-Type": "application/json",
       },

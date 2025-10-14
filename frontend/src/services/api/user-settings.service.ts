@@ -1,5 +1,5 @@
 import { BaseApiService } from "../core/base-api.service";
-import type { UserSettings, UserSettingsUpdate } from "../types";
+import type { UserSettings, UserSettingsUpdate } from "@/types/settings";
 
 /**
  * User settings service for managing user preferences

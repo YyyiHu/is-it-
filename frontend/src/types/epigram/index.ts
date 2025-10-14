@@ -1,3 +1,10 @@
+/**
+ * Epigram related types
+ */
+
+/**
+ * Complete epigram data
+ */
 export interface Epigram {
   id: number;
   text: string;
@@ -8,11 +15,17 @@ export interface Epigram {
   updated_at: string;
 }
 
+/**
+ * Epigram creation data
+ */
 export interface EpigramCreate {
   text: string;
   author?: string;
 }
 
+/**
+ * Epigram data returned from API
+ */
 export interface EpigramRead {
   id: number;
   text: string;
@@ -22,17 +35,11 @@ export interface EpigramRead {
   updated_at: string;
 }
 
+/**
+ * Epigram status enum
+ */
 export enum EpigramStatus {
   PENDING = 0,
   APPROVED = 1,
   REJECTED = 2,
-}
-
-export interface ApiError {
-  detail: string;
-}
-
-export interface LoadingState {
-  isLoading: boolean;
-  error: string | null;
 }

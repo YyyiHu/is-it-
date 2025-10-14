@@ -1,5 +1,6 @@
 import { BaseApiService } from "../core/base-api.service";
 import type { EpigramRead, EpigramCreate } from "@/types/epigram";
+import type { PaginatedResponse } from "@/types/api";
 
 /**
  * Epigram service for fetching and managing epigrams
@@ -32,23 +33,13 @@ class EpigramService extends BaseApiService {
     return this.post<EpigramRead>("/epigrams/", epigram);
   }
 
-  // Removed unused getEpigramById method
-
   /**
    * Get epigrams submitted by the current user with pagination
    */
   async getMyEpigrams(
     page: number = 1,
     limit: number = 10
-  ): Promise<{
-    items: EpigramRead[];
-    total: number;
-    page: number;
-    size: number;
-    pages: number;
-    has_next: boolean;
-    has_prev: boolean;
-  }> {
+  ): Promise<PaginatedResponse<EpigramRead>> {
     const params = new URLSearchParams();
     params.append("page", page.toString());
     params.append("limit", limit.toString());

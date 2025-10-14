@@ -1,6 +1,6 @@
 import { HttpClient } from "./http-client";
 
-// API base URL - Vite proxy will handle routing to backend
+// API base URL, Vite proxy handles routing to backend
 const API_BASE_URL = "/api";
 
 /**

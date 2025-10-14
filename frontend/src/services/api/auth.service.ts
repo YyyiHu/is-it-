@@ -1,5 +1,5 @@
 import { BaseApiService } from "../core/base-api.service";
-import type { UserCreate, UserLogin, UserRead } from "../types";
+import type { UserCreate, UserLogin, UserRead } from "@/types/auth";
 
 /**
  * Authentication service for user registration, login, and session management
