@@ -1,0 +1,12 @@
+{
+  "name": "is-it",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Is-It Project - A full-stack web application built with Vue.js and FastAPI",
+  "scripts": {
+    "start": "docker-compose up",
+    "build": "docker-compose up --build",
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && uvicorn app.main:app --reload"
+  }
+}

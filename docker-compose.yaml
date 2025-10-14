@@ -19,7 +19,9 @@ services:
       retries: 20
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     restart: unless-stopped
     env_file:
       - .env
@@ -27,7 +29,6 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
-      # allow the dev frontend origin
       CORS_ORIGINS: ${CORS_ORIGINS}
     depends_on:
       db:
@@ -41,15 +42,17 @@ services:
   frontend:
     build:
       context: ./frontend
-      target: dev
     depends_on:
       - backend
     ports:
       - "5173:5173"
     volumes:
-      - ./frontend:/app
+      - ./frontend:/app:delegated
       - /app/node_modules
     command: npm run dev -- --host
+    environment:
+      - VITE_API_URL=http://localhost:8000
 
 volumes:
   pgdata:
+    driver: local

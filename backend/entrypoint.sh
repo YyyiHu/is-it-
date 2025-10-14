@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# run migrations
-alembic -c /app/alembic.ini upgrade head
-
-# start the app
-exec "$@"
-#!/usr/bin/env bash
-set -e
-
 # optional wait for DB if you ever need it
 # python - <<'PY'
 # import os, time, psycopg

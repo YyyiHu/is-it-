@@ -9,7 +9,7 @@
     "preview": "vite preview --host"
   },
   "dependencies": {
-    "@tanstack/vue-query": "^5.90.2",
+    "@tanstack/vue-query": "^5.90.3",
     "axios": "^1.12.2",
     "lucide-vue-next": "^0.545.0",
     "pinia": "^3.0.3",
@@ -17,14 +17,14 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/node": "^24.6.0",
+    "@types/node": "^24.7.2",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.1",
     "typescript": "~5.9.3",
-    "vite": "^7.1.7",
+    "vite": "^7.1.10",
     "vue-tsc": "^3.1.0"
   }
 }

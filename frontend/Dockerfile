@@ -1,16 +1,15 @@
 # Development target
-FROM node:22-alpine AS dev
+FROM node:22-alpine
 WORKDIR /app
-# Use npm ci when lockfile exists, fallback to npm install
-COPY package.json package-lock.json* ./
-RUN npm ci || npm install
-COPY . .
-# command is set in docker compose
 
-# Production build target
-FROM node:22-alpine AS build
-WORKDIR /app
+# Copy package files
 COPY package.json package-lock.json* ./
+
+# Install dependencies
 RUN npm ci || npm install
+
+# Copy source code
 COPY . .
-RUN npm run build
+
+# Default command is set in docker-compose
+CMD ["npm", "run", "dev", "--", "--host"]
