@@ -6,7 +6,7 @@ import { useUiStore } from "@/stores/ui";
 import { useAuthStore } from "@/stores/auth";
 import { useNotificationStore } from "@/stores/notification";
 import { useEpigramStore } from "@/stores/epigram";
-import { useEpigrams } from "@/composables/useEpigrams";
+import { useEpigramMutations } from "@/composables/useEpigramMutations";
 import { epigramService } from "@/services";
 import { type EpigramRead, type EpigramCreate } from "@/types/epigram";
 import { BaseInput, BaseButton, BaseTextarea } from "@/components/shared/forms";
@@ -19,7 +19,7 @@ interface Props {
   epigram?: EpigramRead | null;
   isOpen?: boolean;
   // Mode: 'create' or 'edit'
-  mode?: 'create' | 'edit';
+  mode?: "create" | "edit";
 }
 
 interface Emits {
@@ -31,7 +31,7 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   epigram: null,
   isOpen: false,
-  mode: 'create'
+  mode: "create",
 });
 
 const emit = defineEmits<Emits>();
@@ -42,7 +42,7 @@ const notificationStore = useNotificationStore();
 const epigramStore = useEpigramStore();
 
 // Use submission composable for create mode
-const { submitEpigram: submitEpigramMutation, isSubmitting } = useEpigrams();
+const { updateEpigramMutation } = useEpigramMutations();
 
 // Form state
 const form = reactive<EpigramCreate>({
@@ -51,6 +51,7 @@ const form = reactive<EpigramCreate>({
 });
 
 const errors = ref<Record<string, string[]>>({});
+const textareaRef = ref<{ focus: () => void }>();
 const showExitConfirmation = ref(false);
 
 // For edit mode, track initial state
@@ -59,15 +60,18 @@ const initialFormState = ref<EpigramCreate>({ text: "", author: "" });
 // Update mutation for edit mode
 const updateMutation = useMutation({
   mutationFn: async (data: { id: number; text: string; author?: string }) => {
-    return epigramService.updateEpigram(data.id, { text: data.text, author: data.author });
+    return epigramService.updateEpigram(data.id, {
+      text: data.text,
+      author: data.author,
+    });
   },
   onSuccess: (updatedEpigram) => {
     // Update the current epigram in the store if it's being displayed
     epigramStore.updateCurrentEpigram(updatedEpigram);
-    
+
     // Invalidate queries to refresh data
     queryClient.invalidateQueries({ queryKey: ["userEpigrams"] });
-    
+
     notificationStore.success("Epigram updated successfully");
     emit("updated", updatedEpigram);
     emit("close");
@@ -82,26 +86,22 @@ const updateMutation = useMutation({
 });
 
 // Computed properties
-const isEditMode = computed(() => props.mode === 'edit');
-const isCreateMode = computed(() => props.mode === 'create');
+const isEditMode = computed(() => props.mode === "edit");
+const isCreateMode = computed(() => props.mode === "create");
 
-const panelTitle = computed(() => 
+const panelTitle = computed(() =>
   isEditMode.value ? "Edit Epigram" : "Submit an Epigram"
 );
 
-const submitButtonText = computed(() => 
+const submitButtonText = computed(() =>
   isEditMode.value ? "Save Changes" : "Submit Epigram"
 );
 
-const submitIcon = computed(() => 
-  isEditMode.value ? Save : Send
-);
+const submitIcon = computed(() => (isEditMode.value ? Save : Send));
 
-const titleIcon = computed(() => 
-  isEditMode.value ? Save : PenTool
-);
+const titleIcon = computed(() => (isEditMode.value ? Save : PenTool));
 
-const isVisible = computed(() => 
+const isVisible = computed(() =>
   isCreateMode.value ? uiStore.isSubmissionPanelOpen : props.isOpen
 );
 
@@ -109,7 +109,10 @@ const hasChanges = computed(() => {
   if (isCreateMode.value) {
     return form.text.trim() !== "" || (form.author || "").trim() !== "";
   } else {
-    return form.text !== initialFormState.value.text || form.author !== initialFormState.value.author;
+    return (
+      form.text !== initialFormState.value.text ||
+      form.author !== initialFormState.value.author
+    );
   }
 });
 
@@ -125,14 +128,20 @@ const isFormValid = computed(() => {
 
 const canSubmit = computed(() => {
   if (isCreateMode.value) {
-    return isFormValid.value && !isSubmitting.value;
+    return isFormValid.value && !epigramStore.isLoading;
   } else {
-    return isFormValid.value && hasChanges.value && !updateMutation.isPending.value;
+    return (
+      isFormValid.value &&
+      hasChanges.value &&
+      !updateEpigramMutation.isPending.value
+    );
   }
 });
 
-const isLoading = computed(() => 
-  isCreateMode.value ? isSubmitting.value : updateMutation.isPending.value
+const isLoading = computed(() =>
+  isCreateMode.value
+    ? epigramStore.isLoading
+    : updateEpigramMutation.isPending.value
 );
 
 // Methods
@@ -175,11 +184,11 @@ const handleSubmit = async () => {
   if (isCreateMode.value) {
     // Create mode
     try {
-      await submitEpigramMutation({
+      await epigramStore.submitEpigram({
         text: form.text.trim(),
         author: (form.author || "").trim() || undefined,
       });
-      
+
       // Success handling is done in the mutation, just close the panel
       closePanel();
     } catch (error) {
@@ -188,7 +197,7 @@ const handleSubmit = async () => {
   } else {
     // Edit mode
     if (!props.epigram) return;
-    
+
     updateMutation.mutate({
       id: props.epigram.id,
       text: form.text.trim(),
@@ -215,8 +224,23 @@ watch(
 watch(
   () => isVisible.value,
   (visible) => {
-    if (visible && isCreateMode.value) {
-      resetForm();
+    if (visible) {
+      if (isCreateMode.value) {
+        resetForm();
+      }
+      // Auto-focus the textarea when panel opens
+      setTimeout(() => {
+        try {
+          if (
+            textareaRef.value &&
+            typeof textareaRef.value.focus === "function"
+          ) {
+            textareaRef.value.focus();
+          }
+        } catch (error) {
+          console.error("Error focusing textarea:", error);
+        }
+      }, 100);
     }
   }
 );
@@ -261,8 +285,12 @@ onUnmounted(() => {
       />
 
       <!-- Header -->
-      <div class="flex justify-between items-center p-6 border-b border-gray-200">
-        <h3 class="text-xl font-semibold text-gray-900 m-0 flex items-center gap-2">
+      <div
+        class="flex justify-between items-center p-6 border-b border-gray-200"
+      >
+        <h3
+          class="text-xl font-semibold text-gray-900 m-0 flex items-center gap-2"
+        >
           <component :is="titleIcon" :size="24" />
           {{ panelTitle }}
         </h3>
@@ -276,25 +304,25 @@ onUnmounted(() => {
       </div>
 
       <!-- Content -->
-      <div class="overflow-y-auto" :class="isEditMode ? 'max-h-[calc(90vh-140px)]' : ''">
+      <div
+        class="overflow-y-auto"
+        :class="isEditMode ? 'max-h-[calc(90vh-140px)]' : ''"
+      >
         <form @submit.prevent="handleSubmit" class="p-6">
           <!-- Epigram Text -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Epigram Text *
+              Epigram Text <span class="text-red-500">*</span>
             </label>
             <BaseTextarea
+              ref="textareaRef"
               v-model="form.text"
               placeholder="Enter your epigram..."
               :maxlength="150"
               :rows="4"
-              :error="errors.text?.[0]"
               required
             />
-            <div class="flex justify-between items-center mt-2">
-              <div class="text-xs text-gray-500">
-                Maximum 150 characters
-              </div>
+            <div class="flex justify-end items-center mt-2">
               <div class="text-xs text-gray-500">
                 {{ form.text.length }}/150
               </div>
@@ -310,15 +338,18 @@ onUnmounted(() => {
               v-model="form.author"
               placeholder="Author name (optional)"
               :maxlength="50"
-              :error="errors.author?.[0]"
             />
-            <div class="text-xs text-gray-500 mt-1">
-              Maximum 50 characters
+            <div class="flex justify-end items-center mt-2">
+              <div class="text-xs text-gray-500">
+                {{ (form.author || "").length }}/50
+              </div>
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="flex gap-3 justify-end pt-4 border-t border-gray-200 mt-6">
+          <div
+            class="flex gap-3 justify-end pt-4 border-t border-gray-200 mt-6"
+          >
             <BaseButton
               type="button"
               variant="secondary"
