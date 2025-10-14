@@ -1,4 +1,8 @@
 import { defineStore } from "pinia";
+// Simple utility function to generate unique IDs
+function generateUniqueId(): string {
+  return Math.random().toString(36).substring(2, 9);
+}
 
 export interface NotificationAction {
   label: string;
@@ -25,8 +29,7 @@ export const useNotificationStore = defineStore("notification", {
 
   actions: {
     addNotification(notification: Omit<Notification, "id">): string {
-      const id =
-        Date.now().toString() + Math.random().toString(36).substr(2, 9);
+      const id = generateUniqueId();
       const newNotification: Notification = {
         id,
         duration: 2000, // Default 2 seconds
@@ -37,9 +40,7 @@ export const useNotificationStore = defineStore("notification", {
 
       // Auto remove after duration (unless duration is 0)
       if (newNotification.duration && newNotification.duration > 0) {
-        setTimeout(() => {
-          this.removeNotification(id);
-        }, newNotification.duration);
+        setTimeout(() => this.removeNotification(id), newNotification.duration);
       }
 
       return id;
@@ -56,41 +57,35 @@ export const useNotificationStore = defineStore("notification", {
       this.notifications = [];
     },
 
-    // Convenience methods for toast notifications only
-    success(title: string, message?: string, duration?: number): string {
+    // Convenience methods for toast notifications
+    notify(
+      type: Notification["type"],
+      title: string,
+      message?: string,
+      duration?: number
+    ): string {
       return this.addNotification({
-        type: "success",
+        type,
         title,
         message: message || "",
-        duration: duration ?? 2000, // Use default 2000ms if not provided
+        duration: duration ?? 2000, // Default 2000ms if not provided
       });
+    },
+
+    success(title: string, message?: string, duration?: number): string {
+      return this.notify("success", title, message, duration);
     },
 
     error(title: string, message?: string, duration?: number): string {
-      return this.addNotification({
-        type: "error",
-        title,
-        message: message || "",
-        duration: duration ?? 2000, // Use default 2000ms if not provided
-      });
+      return this.notify("error", title, message, duration);
     },
 
     info(title: string, message?: string, duration?: number): string {
-      return this.addNotification({
-        type: "info",
-        title,
-        message: message || "",
-        duration: duration ?? 2000, // Use default 2000ms if not provided
-      });
+      return this.notify("info", title, message, duration);
     },
 
     warning(title: string, message?: string, duration?: number): string {
-      return this.addNotification({
-        type: "warning",
-        title,
-        message: message || "",
-        duration: duration ?? 2000, // Use default 2000ms if not provided
-      });
+      return this.notify("warning", title, message, duration);
     },
   },
 });

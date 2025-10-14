@@ -1,9 +1,12 @@
 import { defineStore } from "pinia";
 import { epigramService } from "@/services";
 import { autoReloadService } from "@/services/features/auto-reload.service";
-import type { EpigramRead, EpigramCreate, LoadingState } from "@/types/epigram";
+import { useNotificationStore } from "@/stores/notification";
+import { queryClient } from "@/lib/query-client";
+import type { EpigramRead, EpigramCreate } from "@/types/epigram";
+import type { AsyncOperationState } from "@/types/state";
 
-interface EpigramState extends LoadingState {
+interface EpigramState extends AsyncOperationState {
   currentEpigram: EpigramRead | null;
   epigramQueue: EpigramRead[];
   queueMinSize: number;
@@ -27,9 +30,7 @@ export const useEpigramStore = defineStore("epigram", {
 
   actions: {
     setCurrentEpigram(epigram: EpigramRead): void {
-      this.currentEpigram = epigram;
-      // Reset timer when new epigram is displayed
-      autoReloadService.reset();
+      this._setCurrentEpigramAndReset(epigram);
     },
 
     removeFromQueue(epigramId: number): void {
@@ -41,7 +42,7 @@ export const useEpigramStore = defineStore("epigram", {
     updateCurrentEpigram(updatedEpigram: EpigramRead): void {
       // Update the current epigram if it matches
       if (this.currentEpigram?.id === updatedEpigram.id) {
-        this.currentEpigram = updatedEpigram;
+        this._setCurrentEpigramAndReset(updatedEpigram);
       }
 
       // Also update in queue if it exists there
@@ -63,24 +64,35 @@ export const useEpigramStore = defineStore("epigram", {
       this.removeFromQueue(deletedEpigramId);
     },
 
+    /**
+     * Set current epigram and reset auto-reload timer
+     * This method ensures that whenever the current epigram changes,
+     * the auto-reload timer is properly reset
+     * @private
+     */
+    _setCurrentEpigramAndReset(epigram: EpigramRead | null): void {
+      this.currentEpigram = epigram;
+      if (epigram) {
+        autoReloadService.reset();
+      }
+    },
+
     async loadInitialEpigram(): Promise<void> {
+      if (this.isLoading) return;
+
       this.isLoading = true;
       this.error = null;
 
       try {
-        // Fetch initial batch
         const epigrams = await epigramService.getRandomEpigramsBatch(
           this.batchSize
         );
 
-        if (epigrams && epigrams.length > 0) {
-          this.currentEpigram = epigrams[0] || null;
+        if (epigrams?.length > 0) {
+          this._setCurrentEpigramAndReset(epigrams[0] || null);
           this.epigramQueue = epigrams.slice(1);
-          // Reset timer when initial epigram is loaded
-          autoReloadService.reset();
         } else {
-          // Handle empty response
-          this.currentEpigram = null;
+          this._setCurrentEpigramAndReset(null);
         }
       } catch (error) {
         this.error =
@@ -90,32 +102,36 @@ export const useEpigramStore = defineStore("epigram", {
       }
     },
 
+    /**
+     * Load the next epigram from the queue or fetch new ones if empty
+     */
     async loadNextEpigram(): Promise<void> {
       if (this.epigramQueue.length === 0) {
         return this.loadInitialEpigram();
       }
 
-      const nextEpigram = this.epigramQueue.shift();
-      this.currentEpigram = nextEpigram || null;
+      const nextEpigram = this.epigramQueue.shift() || null;
+      this._setCurrentEpigramAndReset(nextEpigram);
 
-      // Reset timer when new epigram is loaded
-      autoReloadService.reset();
-
-      // Refill queue in background if low
+      // Refill queue in background if running low
       if (this.epigramQueue.length <= this.queueMinSize) {
         void this.refillQueue();
       }
     },
 
+    /**
+     * Refill the queue with new epigrams when it's running low
+     */
     async refillQueue(): Promise<void> {
       // Prevent multiple refill calls in quick succession
       if (this.isLoading) return;
 
-      // Use static variable to track last refill time
+      // Throttle refill requests to max once per 10 seconds
       const now = Date.now();
+      const THROTTLE_MS = 10000;
       if (
         refillQueueState.lastRefillTime &&
-        now - refillQueueState.lastRefillTime < 10000
+        now - refillQueueState.lastRefillTime < THROTTLE_MS
       ) {
         return;
       }
@@ -128,20 +144,18 @@ export const useEpigramStore = defineStore("epigram", {
           currentId
         );
 
-        if (!newEpigrams || newEpigrams.length === 0) return;
+        if (!newEpigrams?.length) return;
 
-        // Add new epigrams to queue, avoiding duplicates with both current epigram and queue
+        // Create a set of existing IDs to avoid duplicates
         const existingIds = new Set<number>([
           ...(this.currentEpigram?.id ? [this.currentEpigram.id] : []),
           ...this.epigramQueue.map((e) => e.id),
         ]);
 
-        // Filter out duplicates and add to end of queue
+        // Add only unique epigrams to the queue
         const uniqueEpigrams = newEpigrams.filter(
           (epigram) => !existingIds.has(epigram.id)
         );
-
-        // Only add to queue, don't change current epigram
         if (uniqueEpigrams.length > 0) {
           this.epigramQueue.push(...uniqueEpigrams);
         }
@@ -150,19 +164,35 @@ export const useEpigramStore = defineStore("epigram", {
       }
     },
 
+    /**
+     * Submit a new epigram
+     */
     async submitEpigram(epigramData: EpigramCreate): Promise<EpigramRead> {
       this.isLoading = true;
       this.error = null;
+      const notificationStore = useNotificationStore();
 
       try {
         const newEpigram = await epigramService.createEpigram(epigramData);
-        if (newEpigram) {
-          return newEpigram;
+        if (!newEpigram) {
+          throw new Error("Failed to create epigram");
         }
-        throw new Error("Failed to create epigram");
-      } catch (error) {
-        this.error =
-          error instanceof Error ? error.message : "Failed to submit epigram";
+
+        // Invalidate user epigrams query to refresh history
+        queryClient.invalidateQueries({ queryKey: ["userEpigrams"] });
+
+        notificationStore.success("Epigram submitted successfully");
+
+        return newEpigram;
+      } catch (error: any) {
+        if (error.status === 409) {
+          notificationStore.error("This epigram already exists");
+          this.error = "Epigram already exists";
+        } else {
+          notificationStore.error("Failed to submit epigram");
+          this.error =
+            error instanceof Error ? error.message : "Failed to submit epigram";
+        }
         throw error;
       } finally {
         this.isLoading = false;
