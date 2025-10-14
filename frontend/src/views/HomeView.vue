@@ -98,15 +98,15 @@ onMounted(() => {
 
 <style scoped>
 .home-view {
-  max-width: 900px;
+  max-width: 2000px;
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  padding: 0 var(--spacing-xl);
   font-family: var(--font-primary);
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  justify-content: center; /* Center content vertically */
-  padding-top: 3rem; /* More space from header on desktop */
+  justify-content: center;
+  padding-top: 5rem;
 }
 
 .epigram-container {
@@ -115,20 +115,19 @@ onMounted(() => {
   align-items: center;
   gap: var(--spacing-md);
   flex: 1;
-  justify-content: center; /* Center the entire epigram section */
-  max-height: 100vh; /* Prevent container from exceeding viewport */
-  overflow: visible; /* Allow content to be visible */
+  justify-content: center;
+  max-height: 100vh;
+  overflow: visible;
 }
 
-/* Flexible wrapper that adapts to content size */
 .epigram-wrapper {
-  position: relative; /* For absolute positioned refresh button */
+  position: relative;
   display: flex;
-  align-items: flex-start; /* Align to top */
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
-  flex-shrink: 1; /* Allow shrinking if needed */
-  min-height: 0; /* Allow flex item to shrink below content size */
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .auto-reload-timer-position {
@@ -138,19 +137,18 @@ onMounted(() => {
   z-index: var(--z-base);
 }
 
-/* Fixed height container to reserve space for the title */
 .question-container {
-  height: 70px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: var(--spacing-sm) 0;
-  flex-shrink: 0; /* Don't shrink this container */
+  margin: var(--spacing-md) 0;
+  flex-shrink: 0;
 }
 
 .question-title {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   font-weight: var(--font-weight-semibold);
   text-align: center;
   color: var(--text-primary);
