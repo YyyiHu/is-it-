@@ -30,7 +30,7 @@ A modern web application that displays thought-provoking epigrams with automatic
    cd is-it-
 
    # Create environment file
-   cp env.example .env
+   cp .env.example .env
    # Edit .env with your preferred settings
 
    # Start the application
@@ -53,8 +53,10 @@ A modern web application that displays thought-provoking epigrams with automatic
 ### With Account
 
 - **Submit Epigrams**: Click the pencil icon to add your own epigrams
-- **View History**: Click the calendar icon to see your submissions
-- **Settings**: Click the gear icon to configure auto-reload preferences
+- **View History**: Click the history icon to see your submissions (ordered by last updated time)
+  - Select any of your submissions to display it
+  - Edit or delete your own epigrams
+- **Settings**: Click the gear icon to configure auto-reload preferences (default: 5 minutes)
 - **Refresh**: Click the refresh button to immediately load a new epigram
 
 ## Technology Stack
@@ -94,3 +96,6 @@ The project follows a standard structure with a FastAPI backend and Vue.js front
 | POST   | `/api/auth/register`         | Register a new user           |
 | POST   | `/api/auth/login`            | Login and get access token    |
 | POST   | `/api/auth/logout`           | Logout and clear session      |
+| GET    | `/api/auth/me`               | Get current user info         |
+| GET    | `/api/users/settings`        | Get user settings             |
+| PUT    | `/api/users/settings`        | Update user settings          |

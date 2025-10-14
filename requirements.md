@@ -20,43 +20,42 @@ Build a small web app that shows a random epigram on the web. Visitors can load 
 - Contribute panel to submit text and optional author
 - Store and retrieve data from PostgreSQL
 - Basic client and server validation
-- Clear empty loading and error states
 
 ## Should Have
 
-- Simple rate limit such as five submissions per minute per IP
-- History icon and drawer that lists submissions from this browser even without login
-  - Use a persistent client id stored in localStorage and a cookie
-  - Show list of user's submitted epigrams in the history drawer:
-    - Each item shows text preview and author
-    - Items are clickable to display full epigram in center
-    - Most recent submissions at the top
-  - Show empty state when there is no submission yet
+- Show empty state when there is no submission yet
+- Clear empty loading and error states
 
 ## Could Have if time allows
 
-- Custom auto reload interval
-- Browse all epigrams feature:
-  - Book icon in header opens browse drawer
-  - List all approved epigrams, newest first
-  - Click any epigram to display in center
-  - Search by text or author
-  - Infinite scroll pagination
-  - TanStack Query for efficient data loading
+- Custom auto reload interval (default is 5 minutes)
+- History icon and drawer (authenticated users only):
+  - Shows user's submitted epigrams with infinite scroll
+  - Each item shows text preview and author
+  - Items are clickable to display full epigram in center
+  - Most recent submissions at the top (ordered by last updated time)
+  - Users can edit or delete their own epigrams from the history panel
+  - Selected epigram is highlighted in the history list
 - Advanced performance features:
   - TanStack Query integration:
     - Efficient server state caching
     - Background polling with smart retry
     - Optimistic UI updates for submissions
   - Prefetch multiple random epigrams for instant display
-  - Debounced search in browse view
 
 ## Future Features
 
-- Accounts and login so users can persistently view and manage their own contributions across devices
-- Users can edit and delete their own contributions
+- Browse all epigrams feature:
+  - Book icon in header opens browse drawer
+  - List all approved epigrams, newest first
+  - Click any epigram to display in center
+  - Search by text or author
+  - Infinite scroll pagination
+  - Debounced search
 - Roles for moderation so moderators and admins can approve or reject pending items
 - Pagination and richer search in the browse view
+- Categorize epigrams by tags
+- Search epigrams by tags and keywords
 
 ## API v1
 
@@ -79,15 +78,15 @@ Build a small web app that shows a random epigram on the web. Visitors can load 
 
 ### Epigram
 
-| Field      | Type             | Description                               |
-| ---------- | ---------------- | ----------------------------------------- |
-| id         | int primary key  | Unique identifier                         |
-| text       | string up to 500 | Epigram content                           |
-| author     | string up to 100 | Optional author name                      |
-| status     | smallint         | zero pending one approved two rejected    |
-| client_id  | string optional  | Anonymous browser identifier UUID         |
-| created_at | timestamptz      | Creation timestamp                        |
-| updated_at | timestamptz      | Last update timestamp(for future feature) |
+| Field      | Type             | Description                            |
+| ---------- | ---------------- | -------------------------------------- |
+| id         | int primary key  | Unique identifier                      |
+| text       | string up to 150 | Epigram content                        |
+| author     | string up to 50  | Optional author name                   |
+| status     | smallint         | zero pending one approved two rejected |
+| user_id    | int foreign key  | User who submitted this epigram        |
+| created_at | timestamptz      | Creation timestamp                     |
+| updated_at | timestamptz      | Last update timestamp                  |
 
 Default status is one on insert
 
@@ -126,11 +125,11 @@ Default status is one on insert
 
   - Text field:
     - Required with clear "required" indicator
-    - Max 500 characters with character counter
+    - Max 150 characters with character counter
     - Real-time validation feedback
   - Author field:
     - Optional with clear "optional" indicator
-    - Max 100 characters with character counter
+    - Max 50 characters with character counter
   - Form-level validation:
     - Disable submit button when invalid
     - Show field-specific error messages
