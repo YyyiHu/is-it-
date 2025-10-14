@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { Clock } from "lucide-vue-next";
 import { autoReloadService } from "@/services";
 import { useAuthStore } from "@/stores/auth";
+import { formatTime } from "@/utils";
 
 // Props
 const props = defineProps({
@@ -18,13 +19,6 @@ const authStore = useAuthStore();
 // State
 const timeLeft = ref("");
 const intervalId = ref<number | null>(null);
-
-// Format seconds to MM:SS
-const formatTime = (seconds: number): string => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-};
 
 // Update time left - simplified
 const updateTimeLeft = () => {

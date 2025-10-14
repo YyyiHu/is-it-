@@ -11,7 +11,6 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "exactOptionalPropertyTypes": false,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "strict": true,
     "noUnusedLocals": false,
