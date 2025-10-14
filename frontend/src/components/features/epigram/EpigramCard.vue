@@ -7,7 +7,7 @@ defineProps<{
 
 <template>
   <div class="epigram-card">
-    <div class="epigram-content">
+    <div class="epigram-content" :class="{ 'no-author': !author }">
       <p class="epigram-text">
         {{ text }}
       </p>
@@ -22,9 +22,10 @@ defineProps<{
   background-color: var(--background);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
   padding: var(--spacing-xl);
   text-align: center;
-  width: min(90vw, 700px);
+  width: min(78vw, 620px);
   height: min(50vh, 400px);
   margin: 0 auto;
   display: flex;
@@ -46,10 +47,14 @@ defineProps<{
   height: 100%;
 }
 
+.epigram-content.no-author {
+  padding-bottom: 1.5rem;
+}
+
 .epigram-text {
   font-family: var(--font-display);
   font-size: 1.75rem;
-  line-height: 1.6;
+  line-height: var(--line-height-relaxed);
   color: var(--text-primary);
   font-weight: var(--font-weight-medium);
   margin: 0;
@@ -76,26 +81,24 @@ defineProps<{
   overflow-wrap: break-word;
 }
 
-/* Custom scrollbar for long epigrams */
 .epigram-card::-webkit-scrollbar {
   width: 8px;
 }
 
 .epigram-card::-webkit-scrollbar-track {
-  background: var(--light-100);
+  background: var(--background-secondary);
   border-radius: var(--radius-full);
 }
 
 .epigram-card::-webkit-scrollbar-thumb {
-  background: var(--grey-300);
+  background: var(--border);
   border-radius: var(--radius-full);
 }
 
 .epigram-card::-webkit-scrollbar-thumb:hover {
-  background: var(--grey-400);
+  background: var(--text-tertiary);
 }
 
-/* Responsive text sizing */
 @media (min-width: 768px) {
   .epigram-text {
     font-size: 2rem;
@@ -108,8 +111,8 @@ defineProps<{
 
 @media (min-width: 1024px) {
   .epigram-text {
-    font-size: 2.25rem;
-    padding-top: var(--spacing-sm);
+    font-size: 2rem;
+    padding-top: var(--spacing-lg);
   }
 
   .epigram-author {
