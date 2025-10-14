@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from "vue";
+import { computed, useAttrs, ref } from "vue";
 
 interface Props {
   modelValue?: string;
@@ -15,6 +15,7 @@ interface Props {
   showCharCount?: boolean;
   resize?: "none" | "vertical" | "horizontal" | "both";
   size?: "sm" | "md" | "lg";
+  variant?: "default" | "filled";
 }
 
 interface Emits {
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCharCount: false,
   resize: "vertical",
   size: "md",
+  variant: "default",
 });
 
 const emit = defineEmits<Emits>();
@@ -44,10 +46,10 @@ const textareaId = computed(() => {
 
 const textareaClasses = computed(() => {
   const base =
-    "w-full border-2 font-theme-medium transition-theme-fast focus:outline-none focus:ring-2 rounded-theme-lg";
+    "w-full border-2 font-medium transition-all duration-150 focus:outline-none focus:ring-2 rounded-lg";
 
   let size = "";
-  let variant = "bg-theme-primary border-theme-primary"; // Consistent with BaseInput
+  let variant = "";
   let state = "";
   let resizeClass = "";
 
@@ -63,16 +65,22 @@ const textareaClasses = computed(() => {
       size = "px-3.5 py-2.5 text-base";
   }
 
+  // Variant classes
+  if (props.variant === "filled") {
+    variant = "bg-gray-50 border-gray-200";
+  } else {
+    variant = "bg-white border-gray-300";
+  }
+
   // State classes
   if (props.error) {
-    state =
-      "border-theme-error focus:border-theme-error focus:ring-theme-error-light";
+    state = "border-red-500 focus:border-red-500 focus:ring-red-200";
   } else {
-    state = "focus:border-theme-accent focus:ring-theme-accent-light";
+    state = "border-gray-300 focus:border-black focus:ring-gray-200";
   }
 
   if (props.disabled) {
-    state += " opacity-60 cursor-not-allowed bg-theme-tertiary";
+    state += " opacity-60 cursor-not-allowed bg-gray-100";
   }
 
   // Resize classes
@@ -94,10 +102,8 @@ const textareaClasses = computed(() => {
 });
 
 const labelClasses = computed(() => {
-  const base = "block text-sm font-theme-medium mb-2";
-  return props.error
-    ? `${base} text-theme-error`
-    : `${base} text-theme-secondary`;
+  const base = "block text-sm font-medium mb-2";
+  return props.error ? `${base} text-red-600` : `${base} text-gray-700`;
 });
 
 const characterCount = computed(() => {
@@ -120,6 +126,17 @@ const handleBlur = () => {
 const handleFocus = () => {
   emit("focus");
 };
+
+// Expose textarea element for external access
+const textareaElement = ref<HTMLTextAreaElement | null>(null);
+
+defineExpose({
+  focus: () => {
+    if (textareaElement.value) {
+      textareaElement.value.focus();
+    }
+  },
+});
 </script>
 
 <template>
@@ -135,6 +152,7 @@ const handleFocus = () => {
 
     <!-- Textarea -->
     <textarea
+      ref="textareaElement"
       :id="textareaId"
       :value="modelValue"
       :placeholder="placeholder"
@@ -179,7 +197,7 @@ const handleFocus = () => {
 
 <style scoped>
 .form-textarea-wrapper {
-  @apply mb-4;
+  margin-bottom: 1rem;
 }
 
 /* Custom focus ring for better accessibility */

@@ -44,7 +44,7 @@ const inputId = computed(() => {
 
 const inputClasses = computed(() => {
   const base =
-    "w-full border-2 font-theme-medium transition-theme-fast focus:outline-none focus:ring-2 rounded-theme-lg";
+    "w-full border-2 font-medium transition-all duration-150 focus:outline-none focus:ring-2 rounded-lg";
 
   let size = "";
   let variant = "";
@@ -64,31 +64,28 @@ const inputClasses = computed(() => {
 
   // Variant classes
   if (props.variant === "filled") {
-    variant = "bg-theme-secondary border-theme-light";
+    variant = "bg-gray-50 border-gray-200";
   } else {
-    variant = "bg-theme-primary border-theme-primary";
+    variant = "bg-white border-gray-300";
   }
 
   // State classes
   if (props.error) {
-    state =
-      "border-theme-error focus:border-theme-error focus:ring-theme-error-light";
+    state = "border-red-500 focus:border-red-500 focus:ring-red-200";
   } else {
-    state = "focus:border-theme-accent focus:ring-theme-accent-light";
+    state = "border-gray-300 focus:border-black focus:ring-gray-200";
   }
 
   if (props.disabled) {
-    state += " opacity-60 cursor-not-allowed bg-theme-tertiary";
+    state += " opacity-60 cursor-not-allowed bg-gray-100";
   }
 
   return `${base} ${size} ${variant} ${state}`;
 });
 
 const labelClasses = computed(() => {
-  const base = "block text-sm font-theme-medium mb-2";
-  return props.error
-    ? `${base} text-theme-error`
-    : `${base} text-theme-secondary`;
+  const base = "block text-sm font-medium mb-2";
+  return props.error ? `${base} text-red-600` : `${base} text-gray-700`;
 });
 
 const characterCount = computed(() => {
@@ -172,17 +169,28 @@ const handleFocus = () => {
 
 <style scoped>
 .form-input-wrapper {
-  @apply mb-4;
+  margin-bottom: 1rem;
+}
+
+/* Custom focus ring for better accessibility */
+input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+input.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 /* Remove default input styling */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
+  appearance: none;
   -webkit-appearance: none;
   margin: 0;
 }
 
 input[type="number"] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 </style>
