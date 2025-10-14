@@ -76,9 +76,13 @@ defineProps<{
   font-weight: var(--font-weight-regular);
   margin-top: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
-  width: 100%;
+  width: calc(100% - 60px); /* Make space for the refresh button */
   word-wrap: break-word;
   overflow-wrap: break-word;
+  padding-right: 50px; /* Add padding on the right side */
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .epigram-card::-webkit-scrollbar {
@@ -144,6 +148,8 @@ defineProps<{
     font-size: 0.875rem;
     text-align: center;
     margin-top: var(--spacing-md);
+    width: calc(100% - 40px); /* Smaller space for mobile */
+    padding-right: 35px;
   }
 
   .epigram-content {
