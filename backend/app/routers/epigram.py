@@ -1,10 +1,10 @@
-"""API endpoints for epigram operations."""
+"""API endpoints for epigram operations with async support."""
 
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlmodel import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import get_session
+from app.db import get_async_session
 from app.schemas.epigram import EpigramCreate, EpigramRead, EpigramPaginatedResponse
 from app.deps import get_current_active_user
 from app.services.epigram import EpigramService
@@ -13,13 +13,15 @@ from app.models.user import User
 router = APIRouter(prefix="/epigrams", tags=["Epigrams"])
 
 
-def get_epigram_service(session: Session = Depends(get_session)) -> EpigramService:
+async def get_epigram_service(
+    session: AsyncSession = Depends(get_async_session)
+) -> EpigramService:
     """Dependency to get epigram service instance."""
     return EpigramService(session)
 
 
 @router.get("/random/batch", response_model=List[EpigramRead])
-def get_random_epigrams_batch(
+async def get_random_epigrams_batch(
     count: int = Query(
         default=5, ge=1, le=20, description="Number of epigrams to fetch"
     ),
@@ -28,8 +30,8 @@ def get_random_epigrams_batch(
     ),
     service: EpigramService = Depends(get_epigram_service),
 ):
-    """Get multiple random epigrams for client caching."""
-    epigrams = service.get_random_approved(count=count, exclude_id=current_id)
+    """Get multiple random epigrams for client caching (async version)."""
+    epigrams = await service.get_random_approved(count=count, exclude_id=current_id)
     if not epigrams:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="No epigrams available"
@@ -38,28 +40,28 @@ def get_random_epigrams_batch(
 
 
 @router.post("/", response_model=EpigramRead, status_code=status.HTTP_201_CREATED)
-def create_epigram(
+async def create_epigram(
     payload: EpigramCreate,
     service: EpigramService = Depends(get_epigram_service),
     current_user: User = Depends(get_current_active_user),
 ):
     """Create new epigram (authenticated users only)."""
     try:
-        epigram = service.create_epigram(payload, current_user.id)
+        epigram = await service.create_epigram(payload, current_user.id)
         return epigram
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e)) from e
 
 
 @router.get("/mine", response_model=EpigramPaginatedResponse)
-def list_my_epigrams(
+async def list_my_epigrams(
     page: int = Query(1, ge=1, description="Page number (1-based)"),
     limit: int = Query(10, ge=1, le=100, description="Items per page (max 100)"),
     service: EpigramService = Depends(get_epigram_service),
     current_user: User = Depends(get_current_active_user),
 ):
     """Get epigrams created by current authenticated user with pagination."""
-    epigrams, total = service.get_user_epigrams(current_user.id, page=page, limit=limit)
+    epigrams, total = await service.get_user_epigrams(current_user.id, page=page, limit=limit)
 
     # Calculate pagination metadata
     pages = (total + limit - 1) // limit  # Ceiling division
@@ -81,7 +83,7 @@ def list_my_epigrams(
 
 
 @router.put("/{epigram_id}", response_model=EpigramRead)
-def update_epigram(
+async def update_epigram(
     epigram_id: int,
     payload: EpigramCreate,
     service: EpigramService = Depends(get_epigram_service),
@@ -89,7 +91,7 @@ def update_epigram(
 ):
     """Update an existing epigram (owner only)."""
     try:
-        epigram = service.update_epigram(epigram_id, payload, current_user.id)
+        epigram = await service.update_epigram(epigram_id, payload, current_user.id)
         return epigram
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
@@ -98,14 +100,14 @@ def update_epigram(
 
 
 @router.delete("/{epigram_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_epigram(
+async def delete_epigram(
     epigram_id: int,
     service: EpigramService = Depends(get_epigram_service),
     current_user: User = Depends(get_current_active_user),
 ):
     """Delete an epigram (owner only)."""
     try:
-        service.delete_epigram(epigram_id, current_user.id)
+        await service.delete_epigram(epigram_id, current_user.id)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except PermissionError as e:

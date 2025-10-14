@@ -8,12 +8,12 @@ from datetime import timedelta
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status, Response
-from sqlmodel import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import get_session
+from app.db import get_async_session
 from app.deps import get_current_active_user
 from app.models.user import User
-from app.schemas.user import Token, UserCreate, UserLogin, UserRead
+from app.schemas.user import UserCreate, UserLogin, UserRead
 from app.services.auth import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from app.services.user import UserService
 
@@ -21,10 +21,10 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-def register_user(
+async def register_user(
     user_create: UserCreate,
     response: Response,
-    db: Session = Depends(get_session),
+    db: AsyncSession = Depends(get_async_session),
 ) -> Any:
     """
     Register a new user and automatically log them in.
@@ -44,7 +44,7 @@ def register_user(
         HTTPException: If username already exists
     """
     # Check if username already exists
-    existing_user = UserService.get_user_by_username(db, user_create.username)
+    existing_user = await UserService.get_user_by_username(db, user_create.username)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -52,7 +52,7 @@ def register_user(
         )
 
     # Create the user
-    user = UserService.create_user(db, user_create)
+    user = await UserService.create_user(db, user_create)
 
     # Create access token for auto-login
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -74,10 +74,10 @@ def register_user(
 
 
 @router.post("/login", response_model=UserRead)
-def login_user(
+async def login_user(
     user_login: UserLogin,
     response: Response,
-    db: Session = Depends(get_session),
+    db: AsyncSession = Depends(get_async_session),
 ) -> Any:
     """
     Authenticate user and return user data with JWT token in HTTP-only cookie.
@@ -97,7 +97,7 @@ def login_user(
         HTTPException: If credentials are invalid
     """
     # Authenticate user
-    user = UserService.authenticate_user(db, user_login.username, user_login.password)
+    user = await UserService.authenticate_user(db, user_login.username, user_login.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -125,7 +125,7 @@ def login_user(
 
 
 @router.get("/me", response_model=UserRead)
-def get_current_user_info(
+async def get_current_user_info(
     current_user: User = Depends(get_current_active_user),
 ) -> Any:
     """
@@ -144,7 +144,7 @@ def get_current_user_info(
 
 
 @router.post("/logout")
-def logout_user(response: Response) -> Any:
+async def logout_user(response: Response) -> Any:
     """
     Logout user by clearing the HTTP-only cookie.
 
@@ -161,7 +161,7 @@ def logout_user(response: Response) -> Any:
 
 
 @router.post("/verify-token")
-def verify_user_token(
+async def verify_user_token(
     current_user: User = Depends(get_current_active_user),
 ) -> Any:
     """

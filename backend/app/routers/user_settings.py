@@ -7,21 +7,21 @@ This module handles user-specific settings management for authenticated users.
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import get_session
+from app.db import get_async_session
 from app.deps import get_current_active_user
 from app.models.user import User
-from app.schemas.user import UserSettingsCreate, UserSettingsRead, UserSettingsUpdate
+from app.schemas.user import UserSettingsRead, UserSettingsUpdate
 from app.services.user_settings import UserSettingsService
 
 router = APIRouter(prefix="/users", tags=["user-settings"])
 
 
 @router.get("/settings", response_model=UserSettingsRead)
-def get_user_settings(
+async def get_user_settings(
     current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_session),
+    db: AsyncSession = Depends(get_async_session),
 ) -> Any:
     """
     Get current user's settings.
@@ -39,7 +39,7 @@ def get_user_settings(
     Raises:
         HTTPException: If user settings not found
     """
-    settings = UserSettingsService.get_user_settings(db, current_user.id)
+    settings = await UserSettingsService.get_user_settings(db, current_user.id)
     if not settings:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found"
@@ -48,10 +48,10 @@ def get_user_settings(
 
 
 @router.put("/settings", response_model=UserSettingsRead)
-def update_user_settings(
+async def update_user_settings(
     settings_update: UserSettingsUpdate,
     current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_session),
+    db: AsyncSession = Depends(get_async_session),
 ) -> Any:
     """
     Update current user's settings.
@@ -70,7 +70,7 @@ def update_user_settings(
     Raises:
         HTTPException: If user settings not found
     """
-    settings = UserSettingsService.update_user_settings(
+    settings = await UserSettingsService.update_user_settings(
         db, current_user.id, settings_update
     )
     if not settings:
@@ -81,9 +81,9 @@ def update_user_settings(
 
 
 @router.delete("/settings")
-def delete_user_settings(
+async def delete_user_settings(
     current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_session),
+    db: AsyncSession = Depends(get_async_session),
 ) -> Any:
     """
     Delete current user's settings (reset to defaults).
@@ -101,13 +101,13 @@ def delete_user_settings(
     Raises:
         HTTPException: If user settings not found
     """
-    success = UserSettingsService.delete_user_settings(db, current_user.id)
+    success = await UserSettingsService.delete_user_settings(db, current_user.id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found"
         )
 
     # Create default settings
-    UserSettingsService.create_default_settings(db, current_user.id)
+    await UserSettingsService.create_default_settings(db, current_user.id)
 
     return {"message": "User settings reset to defaults"}

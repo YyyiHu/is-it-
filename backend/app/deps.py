@@ -8,24 +8,24 @@ and user authentication in protected API endpoints using HTTP-only cookies.
 from typing import Optional
 
 from fastapi import Depends, HTTPException, status, Request
-from sqlmodel import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import get_session
+from app.db import get_async_session
 from app.models.user import User
 from app.services.auth import verify_token
 from app.services.user import UserService
 
 
-def get_current_user(
+async def get_current_user(
     request: Request,
-    db: Session = Depends(get_session),
+    db: AsyncSession = Depends(get_async_session),
 ) -> User:
     """
     Dependency to get the current authenticated user from HTTP-only cookie.
 
     Args:
         request: FastAPI request object to access cookies
-        db: Database session
+        db: Async database session
 
     Returns:
         User: The authenticated user object
@@ -50,7 +50,7 @@ def get_current_user(
         raise credentials_exception
 
     # Get user from database
-    user = UserService.get_user_by_username(db, username)
+    user = await UserService.get_user_by_username(db, username)
     if user is None:
         raise credentials_exception
 
@@ -63,7 +63,7 @@ def get_current_user(
     return user
 
 
-def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
+async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
     """
     Dependency to get the current active user.
 
@@ -83,16 +83,16 @@ def get_current_active_user(current_user: User = Depends(get_current_user)) -> U
     return current_user
 
 
-def get_optional_current_user(
+async def get_optional_current_user(
     request: Request,
-    db: Session = Depends(get_session),
+    db: AsyncSession = Depends(get_async_session),
 ) -> Optional[User]:
     """
     Dependency to optionally get the current user from HTTP-only cookie.
 
     Args:
         request: FastAPI request object to access cookies
-        db: Database session
+        db: Async database session
 
     Returns:
         Optional[User]: The authenticated user object or None if not authenticated
@@ -108,7 +108,7 @@ def get_optional_current_user(
         return None
 
     # Get user from database
-    user = UserService.get_user_by_username(db, username)
+    user = await UserService.get_user_by_username(db, username)
     if user is None or not user.is_active:
         return None
 
