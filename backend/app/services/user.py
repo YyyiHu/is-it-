@@ -20,10 +20,8 @@ class UserService:
         db_user = User(username=user_create.username, hashed_password=hashed_password)
 
         db.add(db_user)
-        await db.commit()
+        await db.flush()
         await db.refresh(db_user)
-
-        # Create default user settings
         await UserSettingsService.create_default_settings(db, db_user.id)
 
         return db_user

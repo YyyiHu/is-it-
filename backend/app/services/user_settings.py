@@ -42,7 +42,7 @@ class UserSettingsService:
         )
 
         db.add(db_settings)
-        await db.commit()
+        await db.flush()
         await db.refresh(db_settings)
         return db_settings
 
