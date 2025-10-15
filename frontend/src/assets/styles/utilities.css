@@ -20,7 +20,7 @@
     background-color: var(--accent-hover);
   }
   .bg-theme-error {
-    background-color: var(--error-red);
+    background-color: var(--red-500);
   }
   .bg-theme-grey {
     background-color: var(--grey-300);
@@ -46,7 +46,7 @@
     color: var(--accent-hover);
   }
   .text-theme-error {
-    color: var(--error-red);
+    color: var(--red-500);
   }
 
   /* Border colors */
@@ -169,139 +169,56 @@
 
   /* Font weights using CSS variables */
   .font-theme-regular {
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-regular);
   }
   .font-theme-medium {
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-medium);
   }
   .font-theme-semibold {
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-semibold);
   }
   .font-theme-bold {
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-bold);
   }
 
   /* Spacing using CSS variables */
   .p-theme-xs {
-    padding: var(--spacing-xs);
+    padding: var(--space-xs);
   }
   .p-theme-sm {
-    padding: var(--spacing-sm);
+    padding: var(--space-sm);
   }
   .p-theme-md {
-    padding: var(--spacing-md);
+    padding: var(--space-md);
   }
   .p-theme-lg {
-    padding: var(--spacing-lg);
+    padding: var(--space-lg);
   }
   .p-theme-xl {
-    padding: var(--spacing-xl);
+    padding: var(--space-xl);
   }
   .p-theme-2xl {
-    padding: var(--spacing-2xl);
+    padding: var(--space-2xl);
   }
 
-  .px-theme-xs {
-    padding-left: var(--spacing-xs);
-    padding-right: var(--spacing-xs);
-  }
-  .px-theme-sm {
-    padding-left: var(--spacing-sm);
-    padding-right: var(--spacing-sm);
-  }
+  /* Only keep commonly used spacing utilities */
   .px-theme-md {
-    padding-left: var(--spacing-md);
-    padding-right: var(--spacing-md);
-  }
-  .px-theme-lg {
-    padding-left: var(--spacing-lg);
-    padding-right: var(--spacing-lg);
-  }
-  .px-theme-xl {
-    padding-left: var(--spacing-xl);
-    padding-right: var(--spacing-xl);
-  }
-
-  .py-theme-xs {
-    padding-top: var(--spacing-xs);
-    padding-bottom: var(--spacing-xs);
-  }
-  .py-theme-sm {
-    padding-top: var(--spacing-sm);
-    padding-bottom: var(--spacing-sm);
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
   }
   .py-theme-md {
-    padding-top: var(--spacing-md);
-    padding-bottom: var(--spacing-md);
-  }
-  .py-theme-lg {
-    padding-top: var(--spacing-lg);
-    padding-bottom: var(--spacing-lg);
-  }
-  .py-theme-xl {
-    padding-top: var(--spacing-xl);
-    padding-bottom: var(--spacing-xl);
+    padding-top: var(--space-md);
+    padding-bottom: var(--space-md);
   }
 
-  .m-theme-xs {
-    margin: var(--spacing-xs);
-  }
-  .m-theme-sm {
-    margin: var(--spacing-sm);
-  }
   .m-theme-md {
-    margin: var(--spacing-md);
+    margin: var(--space-md);
   }
-  .m-theme-lg {
-    margin: var(--spacing-lg);
+  .mt-theme-lg {
+    margin-top: var(--space-lg);
   }
-  .m-theme-xl {
-    margin: var(--spacing-xl);
-  }
-  .m-theme-2xl {
-    margin: var(--spacing-2xl);
-  }
-
-  .mx-theme-xs {
-    margin-left: var(--spacing-xs);
-    margin-right: var(--spacing-xs);
-  }
-  .mx-theme-sm {
-    margin-left: var(--spacing-sm);
-    margin-right: var(--spacing-sm);
-  }
-  .mx-theme-md {
-    margin-left: var(--spacing-md);
-    margin-right: var(--spacing-md);
-  }
-  .mx-theme-lg {
-    margin-left: var(--spacing-lg);
-    margin-right: var(--spacing-lg);
-  }
-  .mx-theme-xl {
-    margin-left: var(--spacing-xl);
-    margin-right: var(--spacing-xl);
-  }
-
-  .my-theme-xs {
-    margin-top: var(--spacing-xs);
-    margin-bottom: var(--spacing-xs);
-  }
-  .my-theme-sm {
-    margin-top: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-  }
-  .my-theme-md {
-    margin-top: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-  }
-  .my-theme-lg {
-    margin-top: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
-  }
-  .my-theme-xl {
-    margin-top: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
+  .mb-theme-md {
+    margin-bottom: var(--space-md);
   }
 }
 
