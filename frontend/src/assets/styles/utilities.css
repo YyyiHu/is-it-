@@ -303,7 +303,6 @@
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
   }
-
 }
 
 /* Note: Spinner is now a reusable Vue component (AppSpinner) */

@@ -10,6 +10,9 @@
 /* Import custom utilities after variables */
 @import "./utilities.css";
 
+/* Import component-based responsive system */
+@import "./responsive/index.css";
+
 /* Base styles that aren't covered by Tailwind */
 html {
   scroll-behavior: smooth;

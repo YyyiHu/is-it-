@@ -60,30 +60,4 @@ defineEmits<{
   opacity: 0.6;
   cursor: not-allowed;
 }
-
-/* Use Tailwind's animate-spin class - no custom animation needed */
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .refresh-button {
-    width: 36px;
-    height: 36px;
-    bottom: 10px;
-    right: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .refresh-button {
-    width: 28px;
-    height: 28px;
-    bottom: 8px;
-    right: 8px;
-  }
-
-  .refresh-button svg {
-    width: 14px;
-    height: 14px;
-  }
-}
 </style>

@@ -17,7 +17,7 @@ const loadNewEpigram = async () => {
 // Watch for when epigram is loaded to show title immediately
 watch(
   () => epigramStore.currentEpigram,
-  (newEpigram) => {
+  (newEpigram: any) => {
     if (newEpigram) {
       // Show title immediately when epigram loads
       showTitle.value = true;
@@ -291,18 +291,6 @@ onMounted(() => {
   .auto-reload-timer-position {
     bottom: 8px;
     left: 8px; /* Align closer to the left edge */
-  }
-}
-
-/* Handle very long epigrams */
-@media (max-height: 600px) {
-  .home-view {
-    justify-content: flex-start;
-    padding-top: var(--spacing-lg);
-  }
-
-  .epigram-container {
-    justify-content: flex-start;
   }
 }
 </style>

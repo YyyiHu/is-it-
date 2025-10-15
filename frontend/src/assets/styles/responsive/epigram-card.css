@@ -1,0 +1,112 @@
+/* Epigram Card - Responsive Styles */
+
+/* Mobile */
+@media (max-width: 480px) {
+  .epigram-card {
+    width: min(95vw, 350px);
+    height: min(60vh, 300px);
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .epigram-card .epigram-text {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .epigram-card .epigram-author {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .epigram-card {
+    width: min(85vw, 600px);
+    height: min(45vh, 350px);
+    padding: var(--spacing-lg);
+  }
+
+  .epigram-card .epigram-text {
+    font-size: 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .epigram-card .epigram-text {
+    font-size: 2rem;
+  }
+
+  .epigram-card .epigram-author {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .epigram-card {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+  }
+
+  .epigram-card .epigram-author {
+    font-size: 1.375rem;
+  }
+}
+
+/* Large Screens */
+@media (min-width: 1600px) {
+  .epigram-card {
+    width: min(70vw, 850px);
+    height: min(50vh, 500px);
+    padding: calc(var(--spacing-xl) * 1.5);
+  }
+
+  .epigram-text {
+    font-size: 2.4rem;
+    line-height: 1.4;
+  }
+
+  .epigram-author {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 2200px) {
+  .home-view .epigram-card {
+    width: min(85vw, 2000px);
+    height: min(75vh, 1000px);
+    padding: calc(var(--spacing-xl) * 4);
+  }
+
+  .home-view .epigram-card .epigram-text {
+    font-size: 5rem;
+    line-height: 1.2;
+  }
+
+  .home-view .epigram-card .epigram-author {
+    font-size: 3rem;
+    margin-top: calc(var(--spacing-lg) * 4);
+  }
+}
+
+/* 2K+ Resolutions */
+@media (min-width: 2500px) {
+  .home-view .epigram-card {
+    width: 1400px;
+    height: 650px;
+    padding: calc(var(--spacing-xl) * 3);
+    max-width: none;
+    min-height: auto;
+  }
+
+  .home-view .epigram-card .epigram-text {
+    font-size: 3.2rem;
+    line-height: 1.3;
+  }
+
+  .home-view .epigram-card .epigram-author {
+    font-size: 2.2rem;
+    margin-top: calc(var(--spacing-lg) * 3);
+  }
+}

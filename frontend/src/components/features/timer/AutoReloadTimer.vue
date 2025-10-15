@@ -79,19 +79,6 @@ onUnmounted(() => {
   transition: all 0.2s ease;
 }
 
-@media (max-width: 480px) {
-  .auto-reload-timer {
-    font-size: 0.65rem;
-    padding: 1px 6px;
-    gap: 2px;
-  }
-
-  .auto-reload-timer svg {
-    width: 12px;
-    height: 12px;
-  }
-}
-
 .with-bg {
   background-color: var(--background-secondary);
   box-shadow: var(--shadow-sm);

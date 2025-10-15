@@ -36,10 +36,10 @@ const handleAuthPanelOpen = () => authStore.clearError();
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col bg-white">
+  <div class="min-h-screen bg-white">
     <AppHeader class="flex-shrink-0" />
 
-    <main class="flex-1 flex flex-col overflow-hidden">
+    <main>
       <HomeView />
     </main>
 
@@ -65,15 +65,16 @@ const handleAuthPanelOpen = () => authStore.clearError();
 </template>
 
 <style>
-/* Ensure no horizontal scrollbars */
+/* Cross-browser normalization */
 html,
-body {
-  overflow-x: hidden;
-}
-
 body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   line-height: 1.5;
@@ -87,9 +88,28 @@ body {
   box-sizing: border-box;
 }
 
-/* Fix for potential scrollbar issues */
+/* Fix for viewport height issues across browsers */
 .min-h-screen {
   min-height: 100vh;
-  min-height: 100dvh; /* Use dynamic viewport height if supported */
+  min-height: 100dvh; /* Dynamic viewport for modern browsers */
+  height: 100vh; /* Fallback for Edge */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Edge-specific fixes */
+@supports (-ms-ime-align: auto) {
+  .min-h-screen {
+    height: 100vh;
+    min-height: auto;
+  }
+}
+
+/* Prevent content overflow in Edge */
+main {
+  flex: 1 1 0%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>

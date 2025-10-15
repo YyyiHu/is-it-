@@ -65,7 +65,7 @@ const updateMutation = useMutation({
       author: data.author,
     });
   },
-  onSuccess: (updatedEpigram) => {
+  onSuccess: (updatedEpigram: any) => {
     // Update the current epigram in the store if it's being displayed
     epigramStore.updateCurrentEpigram(updatedEpigram);
 
@@ -209,7 +209,7 @@ const handleSubmit = async () => {
 // Watch for epigram changes in edit mode
 watch(
   () => props.epigram,
-  (newEpigram) => {
+  (newEpigram: any) => {
     if (newEpigram && isEditMode.value) {
       form.text = newEpigram.text;
       form.author = newEpigram.author || "";
@@ -223,7 +223,7 @@ watch(
 // Watch for panel visibility changes
 watch(
   () => isVisible.value,
-  (visible) => {
+  (visible: boolean) => {
     if (visible) {
       if (isCreateMode.value) {
         resetForm();
@@ -268,7 +268,7 @@ onUnmounted(() => {
     @mousedown.self="handleCloseAttempt"
   >
     <div
-      class="w-full max-w-2xl bg-white rounded-lg shadow-xl overflow-hidden"
+      class="epigram-form-panel w-full max-w-2xl bg-white rounded-lg shadow-xl overflow-hidden"
       :class="isEditMode ? 'max-w-2xl' : 'max-w-lg max-h-[90vh]'"
       @click.stop
     >

@@ -162,7 +162,6 @@ const handleSignOut = async () => {
   box-shadow: 0 0 0 2px var(--white-overlay-40);
 }
 
-/* Remove any potential focus rings from SVG icons */
 .header-icon-button svg {
   outline: none;
   border: none;
@@ -179,4 +178,6 @@ const handleSignOut = async () => {
   transform: none;
   box-shadow: 0 2px 4px var(--black-shadow-10);
 }
+
+/* Responsive styles handled in responsive/layout.css */
 </style>

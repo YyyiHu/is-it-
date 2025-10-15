@@ -14,7 +14,6 @@ import { queryClient } from "@/lib/query-client";
 import { autoReloadService } from "@/services/features/auto-reload.service";
 import EpigramFormPanel from "./EpigramFormPanel.vue";
 
-// Type for pagination response
 interface PaginatedEpigramResponse {
   items: EpigramRead[];
   total: number;
@@ -32,18 +31,14 @@ const notificationStore = useNotificationStore();
 
 const PAGE_SIZE = 10;
 
-// Edit modal state
 const editingEpigram = ref<EpigramRead | null>(null);
 const isEditModalOpen = ref(false);
 
-// Delete confirmation state
 const showDeleteConfirmation = ref(false);
 const epigramToDelete = ref<EpigramRead | null>(null);
 
-// Scroll container reference for infinite scroll detection
 const scrollContainer = ref<HTMLElement | null>(null);
 
-// Infinite scroll query with TanStack Query
 const userEpigramsQuery = useInfiniteQuery({
   queryKey: ["userEpigrams", authStore.user?.id?.toString() || ""],
   queryFn: async ({ pageParam = 1 }): Promise<PaginatedEpigramResponse> => {
@@ -84,25 +79,21 @@ const userEpigramsQuery = useInfiniteQuery({
   },
   initialPageParam: 1,
   getNextPageParam: (lastPage: PaginatedEpigramResponse) => {
-    // Use the has_next flag from the backend response
     return lastPage.has_next ? lastPage.page + 1 : undefined;
   },
   staleTime: 5 * 60 * 1000,
   gcTime: 10 * 60 * 1000,
-  retry: (failureCount) => failureCount < 3,
-  retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  retry: (failureCount: number) => failureCount < 3,
+  retryDelay: (attemptIndex: number) =>
+    Math.min(1000 * 2 ** attemptIndex, 30000),
 });
 
-// Delete mutation
 const deleteMutation = useMutation({
   mutationFn: async (epigramId: number) => {
     return epigramService.deleteEpigram(epigramId);
   },
-  onSuccess: (_, epigramId) => {
-    // Handle deletion in the epigram store (will load next epigram if current was deleted)
+  onSuccess: (_: any, epigramId: number) => {
     epigramStore.handleCurrentEpigramDeleted(epigramId);
-
-    // Invalidate and refetch user epigrams
     queryClient.invalidateQueries({ queryKey: ["userEpigrams"] });
     notificationStore.success("Epigram deleted successfully");
   },
@@ -240,22 +231,19 @@ const formatDate = (dateString: string) => {
 // Lifecycle management
 watch(
   () => uiStore.isHistoryPanelOpen,
-  async (isOpen) => {
+  async (isOpen: boolean) => {
     if (isOpen) {
       closeEditModal();
 
-      // Smart refetch: only if data is stale (5+ minutes old)
       if (userEpigramsQuery.isStale?.value) {
         await userEpigramsQuery.refetch();
       }
 
-      // Setup scroll listener after DOM renders
       await nextTick();
       if (scrollContainer.value) {
         scrollContainer.value.addEventListener("scroll", handleScroll);
       }
     } else {
-      // Clean up scroll listener to prevent memory leaks
       if (scrollContainer.value) {
         scrollContainer.value.removeEventListener("scroll", handleScroll);
       }
@@ -271,12 +259,12 @@ watch(
     @mousedown.self="closePanel"
   >
     <div
-      class="history-panel w-full max-w-4xl max-h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden"
+      class="history-panel w-full max-w-4xl max-h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden flex flex-col"
       @click.stop
     >
       <!-- Header -->
       <div
-        class="flex justify-between items-center p-6 border-b border-gray-200"
+        class="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0"
       >
         <h3
           class="text-xl font-semibold text-gray-900 m-0 flex items-center gap-2"
@@ -296,7 +284,8 @@ watch(
       <!-- Content -->
       <div
         ref="scrollContainer"
-        class="overflow-y-auto max-h-[calc(90vh-140px)]"
+        class="overflow-y-auto flex-1"
+        style="max-height: calc(100% - 80px)"
         @scroll="handleScroll"
       >
         <!-- Loading state -->

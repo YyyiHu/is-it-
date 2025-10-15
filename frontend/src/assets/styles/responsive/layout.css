@@ -1,0 +1,99 @@
+/* Layout Components - Responsive Overrides */
+
+/* Mobile */
+@media (max-width: 480px) {
+  .app-header .logo-text {
+    font-size: 1.2rem;
+  }
+
+  .app-header .header-icon-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .app-header .header-icon-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 767px) {
+  .app-header .logo-text {
+    font-size: 1.3rem;
+  }
+
+  .app-header .header-icon-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .app-header .header-icon-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .app-header .logo-text {
+    font-size: 1.5rem;
+  }
+
+  .app-header .header-icon-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1024px) {
+  .app-header .logo-text {
+    font-size: 1.6rem;
+  }
+
+  .app-header .header-icon-button {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* 1920x1080 */
+@media (min-width: 1800px) and (max-width: 2199px) {
+  .app-header .logo-text {
+    font-size: 1.7rem;
+  }
+
+  .app-header .header-icon-button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* 2K+ */
+@media (min-width: 2200px) {
+  .app-header .logo-text {
+    font-size: 2rem;
+  }
+
+  .app-header .header-icon-button {
+    width: 46px;
+    height: 46px;
+  }
+}
+
+/* 4K+ */
+@media (min-width: 3200px) {
+  .app-header .logo-text {
+    font-size: 2.2rem;
+  }
+
+  .app-header .header-icon-button {
+    width: 52px;
+    height: 52px;
+  }
+
+  .app-header .header-actions {
+    gap: calc(var(--spacing-sm) * 1.5);
+  }
+}

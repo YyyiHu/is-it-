@@ -1,0 +1,110 @@
+/* UI Components - Responsive Scaling */
+
+/* Mobile */
+@media (max-width: 480px) {
+  .home-view .refresh-button {
+    width: 28px;
+    height: 28px;
+    bottom: 8px;
+    right: 8px;
+  }
+
+  .home-view .refresh-button svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .home-view .auto-reload-timer {
+    font-size: 0.65rem;
+    padding: 1px 6px;
+  }
+
+  .home-view .auto-reload-timer-position {
+    bottom: 8px;
+    left: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-view .refresh-button {
+    width: 36px;
+    height: 36px;
+    bottom: 10px;
+    right: 10px;
+  }
+}
+
+/* Large Screens */
+@media (min-width: 1600px) {
+  .home-view .refresh-button {
+    width: 44px;
+    height: 44px;
+    bottom: 14px;
+    right: 14px;
+  }
+
+  .home-view .refresh-button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .home-view .auto-reload-timer {
+    font-size: 0.8rem;
+    padding: 3px 10px;
+  }
+
+  .home-view .auto-reload-timer-position {
+    bottom: 14px;
+    left: 14px;
+  }
+}
+
+/* 2K+ */
+@media (min-width: 2200px) {
+  .home-view .refresh-button {
+    width: 60px;
+    height: 60px;
+    bottom: 24px;
+    right: 24px;
+  }
+
+  .home-view .refresh-button svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .home-view .auto-reload-timer {
+    font-size: 1rem;
+    padding: 6px 16px;
+  }
+
+  .home-view .auto-reload-timer-position {
+    bottom: 24px;
+    left: 24px;
+  }
+}
+
+/* 2560x1440 */
+@media (min-width: 2500px) {
+  .home-view .refresh-button {
+    width: 56px;
+    height: 56px;
+    bottom: 28px;
+    right: 28px;
+  }
+
+  .home-view .refresh-button svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .home-view .auto-reload-timer {
+    font-size: 0.95rem;
+    padding: 6px 14px;
+  }
+
+  .home-view .auto-reload-timer-position {
+    bottom: 28px;
+    left: 28px;
+  }
+}

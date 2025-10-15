@@ -1,0 +1,25 @@
+/* Modal Panels - Uniform Sizing */
+
+/* Large Screens */
+@media (min-width: 1600px) {
+  .auth-panel,
+  .settings-panel.bg-white,
+  .epigram-form-panel.w-full,
+  .history-panel.w-full {
+    max-width: 700px;
+    width: 85%;
+    max-height: 80vh;
+  }
+}
+
+/* 2K+ */
+@media (min-width: 2200px) {
+  .auth-panel,
+  .settings-panel.bg-white,
+  .epigram-form-panel.w-full,
+  .history-panel.w-full {
+    max-width: 800px;
+    width: 80%;
+    max-height: 75vh;
+  }
+}

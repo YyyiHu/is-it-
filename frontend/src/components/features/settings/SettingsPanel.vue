@@ -132,7 +132,7 @@ const validateHours = () => {
     @click="handleClose"
   >
     <div
-      class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto relative"
+      class="settings-panel bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto relative"
       @click.stop
     >
       <!-- Exit confirmation overlay -->

@@ -35,19 +35,17 @@ export const useEpigramStore = defineStore("epigram", {
 
     removeFromQueue(epigramId: number): void {
       this.epigramQueue = this.epigramQueue.filter(
-        (epigram) => epigram.id !== epigramId
+        (epigram: EpigramRead) => epigram.id !== epigramId
       );
     },
 
     updateCurrentEpigram(updatedEpigram: EpigramRead): void {
-      // Update the current epigram if it matches
       if (this.currentEpigram?.id === updatedEpigram.id) {
         this._setCurrentEpigramAndReset(updatedEpigram);
       }
 
-      // Also update in queue if it exists there
       const queueIndex = this.epigramQueue.findIndex(
-        (e) => e.id === updatedEpigram.id
+        (e: EpigramRead) => e.id === updatedEpigram.id
       );
       if (queueIndex !== -1) {
         this.epigramQueue[queueIndex] = updatedEpigram;
@@ -55,21 +53,13 @@ export const useEpigramStore = defineStore("epigram", {
     },
 
     async handleCurrentEpigramDeleted(deletedEpigramId: number): Promise<void> {
-      // If the currently displayed epigram was deleted, load the next one
       if (this.currentEpigram?.id === deletedEpigramId) {
         await this.loadNextEpigram();
       }
 
-      // Also remove from queue if it exists there
       this.removeFromQueue(deletedEpigramId);
     },
 
-    /**
-     * Set current epigram and reset auto-reload timer
-     * This method ensures that whenever the current epigram changes,
-     * the auto-reload timer is properly reset
-     * @private
-     */
     _setCurrentEpigramAndReset(epigram: EpigramRead | null): void {
       this.currentEpigram = epigram;
       if (epigram) {
@@ -149,12 +139,11 @@ export const useEpigramStore = defineStore("epigram", {
         // Create a set of existing IDs to avoid duplicates
         const existingIds = new Set<number>([
           ...(this.currentEpigram?.id ? [this.currentEpigram.id] : []),
-          ...this.epigramQueue.map((e) => e.id),
+          ...this.epigramQueue.map((e: EpigramRead) => e.id),
         ]);
 
-        // Add only unique epigrams to the queue
         const uniqueEpigrams = newEpigrams.filter(
-          (epigram) => !existingIds.has(epigram.id)
+          (epigram: EpigramRead) => !existingIds.has(epigram.id)
         );
         if (uniqueEpigrams.length > 0) {
           this.epigramQueue.push(...uniqueEpigrams);
@@ -164,9 +153,6 @@ export const useEpigramStore = defineStore("epigram", {
       }
     },
 
-    /**
-     * Submit a new epigram
-     */
     async submitEpigram(epigramData: EpigramCreate): Promise<EpigramRead> {
       this.isLoading = true;
       this.error = null;

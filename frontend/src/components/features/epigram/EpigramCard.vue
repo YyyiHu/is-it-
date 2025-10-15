@@ -76,10 +76,9 @@ defineProps<{
   font-weight: var(--font-weight-regular);
   margin-top: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
-  width: calc(100% - 60px); /* Make space for the refresh button */
+  width: 100%;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  padding-right: 50px; /* Add padding on the right side */
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -103,71 +102,5 @@ defineProps<{
   background: var(--text-tertiary);
 }
 
-@media (min-width: 768px) {
-  .epigram-text {
-    font-size: 2rem;
-  }
-
-  .epigram-author {
-    font-size: 1.25rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .epigram-text {
-    font-size: 2rem;
-    padding-top: var(--spacing-lg);
-  }
-
-  .epigram-author {
-    font-size: 1.375rem;
-  }
-
-  .epigram-card {
-    padding-top: var(--spacing-xl);
-    padding-bottom: var(--spacing-xl);
-  }
-}
-
-@media (max-width: 480px) {
-  .epigram-card {
-    width: min(95vw, 350px);
-    height: min(60vh, 300px);
-    padding: var(--spacing-md) var(--spacing-sm);
-  }
-
-  .epigram-text {
-    font-size: 1.125rem;
-    line-height: 1.4;
-    padding: 0 var(--spacing-xs);
-    letter-spacing: -0.01em;
-    text-align: center;
-  }
-
-  .epigram-author {
-    font-size: 0.875rem;
-    text-align: center;
-    margin-top: var(--spacing-md);
-    width: calc(100% - 40px); /* Smaller space for mobile */
-    padding-right: 35px;
-  }
-
-  .epigram-content {
-    align-items: center;
-  }
-}
-
-@media (min-width: 481px) and (max-width: 767px) {
-  .epigram-card {
-    width: min(85vw, 600px);
-    height: min(45vh, 350px);
-    padding: var(--spacing-lg);
-  }
-
-  .epigram-text {
-    font-size: 1.5rem;
-    line-height: 1.5;
-    padding: 0 var(--spacing-sm);
-  }
-}
+/* Responsive styles moved to centralized responsive/epigram-card.css */
 </style>
